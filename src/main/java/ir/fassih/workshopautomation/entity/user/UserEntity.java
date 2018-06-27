@@ -40,7 +40,7 @@ public class UserEntity implements UserDetails {
 	private UserInfo info;
 	
 	@Column(name="ROLES")
-//	@Convert(converter=UserRolesConverter.class)
+	@Convert(converter=UserRolesConverter.class)
 	private Set< PortalRole > authorities;
 	
 
@@ -87,7 +87,6 @@ public class UserEntity implements UserDetails {
 		private boolean locked = false;
 		private boolean expired = false;
 		private boolean enabled = true;
-
 
 	}
 
