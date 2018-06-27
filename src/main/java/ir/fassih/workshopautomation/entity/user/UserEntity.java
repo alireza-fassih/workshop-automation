@@ -10,6 +10,9 @@ import javax.persistence.Id;
 
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import ir.fassih.workshopautomation.core.datamanagment.AbstractEnumConverter;
 import ir.fassih.workshopautomation.core.datamanagment.AbstractJsonConverter;
 import ir.fassih.workshopautomation.security.PortalRole;
 import lombok.Data;
@@ -70,5 +73,23 @@ public class UserEntity implements UserDetails {
 			super(UserInfo.class);
 		}
 	}
+	
+	public static class UserRolesConverter extends AbstractEnumConverter< PortalRole > {
+		public UserRolesConverter() {
+			super(",", PortalRole.class);
+		}
+	}
+	
+	@Data
+	@JsonIgnoreProperties(ignoreUnknown=true)
+	public static class UserInfo {
+		
+		private boolean locked = false;
+		private boolean expired = false;
+		private boolean enabled = true;
+
+
+	}
+
 
 }
