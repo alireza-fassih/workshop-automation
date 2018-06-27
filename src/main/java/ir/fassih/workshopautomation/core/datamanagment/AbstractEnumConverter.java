@@ -29,7 +29,7 @@ public class AbstractEnumConverter<T extends Enum<T>> implements AttributeConver
 		LinkedHashSet<T> data = new LinkedHashSet<>();
 		if (StringUtils.hasText(dbData)) {
 			for (String en : dbData.split(seprator)) {
-				data.add(Enum.valueOf(klass, en));
+				data.add(Enum.valueOf(klass, en.trim()));
 			}
 		}
 		return data;
