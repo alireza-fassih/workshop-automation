@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -18,7 +19,8 @@ import ir.fassih.workshopautomation.security.PortalRole;
 import lombok.Data;
 
 @Data
-@Entity(name = "DASH_USER")
+@Entity
+@Table(name="DASH_USER")
 public class UserEntity implements UserDetails {
 
 	private static final long serialVersionUID = 5681975715567546285L;
