@@ -1,4 +1,4 @@
-package ir.fassih.workshopautomation.entity.rowmaterialcategory;
+package ir.fassih.workshopautomation.entity.rawmaterialcategory;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,8 +10,8 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name="DASH_ROW_MATERIAL_CATEGORY")
-public class RowMaterialCategoryEntity implements LogicallyDeletable {
+@Table(name="DASH_RAW_MATERIAL_CATEGORY")
+public class RawMaterialCategoryEntity implements LogicallyDeletable {
 
 	@Id
 	@Column(name="ID")
