@@ -33,13 +33,40 @@
     <changeSet id="create-rawMaterialCategory-table" author="alireza-fassih">
         <createTable tableName="DASH_RAW_MATERIAL_CATEGORY">
             <column name="ID" type="BIGINT" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false" />
+                <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="TITLE" type="VARCHAR(255)" >
-                <constraints unique="true" />
+            <column name="TITLE" type="VARCHAR(255)">
+                <constraints unique="true"/>
             </column>
-            <column name="DELETED" type="BOOL" />
+            <column name="DELETED" type="BOOL"/>
         </createTable>
     </changeSet>
+
+
+    <changeSet id="create-rawMaterial-table" author="alireza-fassih">
+        <createTable tableName="DASH_RAW_MATERIAL">
+            <column name="ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="TITLE" type="VARCHAR(255)">
+                <constraints unique="true"/>
+            </column>
+            <column name="DELETED" type="BOOL"/>
+            <column name="UNIT_PRICE" type="BIGINT"/>
+            <column name="CREATE_DATE" type="DATE"/>
+            <column name="LAST_MODIFICATION_DATE" type="DATE"/>
+            <column name="CATEGORY" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+
+
+    <changeSet author="alireza-fassih" id="addMaterial-to-materialCategoryFK">
+        <addForeignKeyConstraint baseColumnNames="CATEGORY"
+                                 baseTableName="DASH_RAW_MATERIAL"
+                                 constraintName="fk-rawMaterial-category"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="DASH_RAW_MATERIAL_CATEGORY"/>
+    </changeSet>
+
 
 </databaseChangeLog>

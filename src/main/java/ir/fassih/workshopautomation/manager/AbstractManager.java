@@ -13,6 +13,8 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import ir.fassih.workshopautomation.entity.core.Traceable;
+import org.h2.message.Trace;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -35,6 +37,12 @@ public abstract class AbstractManager<T, I extends Serializable> {
 
     @Transactional
     public void save(T entity) {
+        if (entity instanceof Traceable) {
+            Traceable traceable = (Traceable) entity;
+            if (traceable.getCreateDate() == null) {
+                traceable.setCreateDate(new Date());
+            }
+        }
         repository.save(entity);
     }
 
@@ -57,11 +65,15 @@ public abstract class AbstractManager<T, I extends Serializable> {
     public void update(I id, T entity) {
         T db = repository.findOne(id);
         BeanUtils.copyProperties(entity, db, ignoreFieldWhenUpdate());
-        save( db );
+        if (db instanceof Traceable) {
+            Traceable traceable = (Traceable) db;
+            traceable.setLastModificationDate(new Date());
+        }
+        save(db);
     }
 
     protected String[] ignoreFieldWhenUpdate() {
-        return new String[] { } ;
+        return new String[]{};
     }
 
 
@@ -109,7 +121,7 @@ public abstract class AbstractManager<T, I extends Serializable> {
     }
 
     private Date convertToDate(String value) {
-        return new Date( Long.parseLong( value ) );
+        return new Date(Long.parseLong(value));
     }
 
     private Object convertValue(Class<?> javaType, String value) {

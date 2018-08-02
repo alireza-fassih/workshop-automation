@@ -44,7 +44,7 @@ public class UserManager extends AbstractManager<UserEntity, Long> implements Us
         if (StringUtils.hasText(entity.getNewPassword())) {
             entity.setPassword(encoder.encode(entity.getNewPassword()));
         }
-        repository.save(entity);
+        super.save(entity);
     }
 
     @Transactional
