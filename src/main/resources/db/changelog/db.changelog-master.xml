@@ -1,38 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog
-	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
-	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-	<changeSet id="create-user-table" author="alireza-fassih">
-		<createTable tableName="DASH_USER">
-			<column name="ID" type="BIGINT" autoIncrement="true">
-				<constraints primaryKey="true" nullable="false" />
-			</column>
-			<column name="EMAIL" type="VARCHAR(255)" >
-				<constraints unique="true" />
-			</column>
-			<column name="PASSWORD" type="VARCHAR(255)" />
-			<column name="ROLES" type="VARCHAR(255)" />
-			<column name="INFO" type="TEXT"/>
-		</createTable>
-		<modifySql>
-			<append value="CHARSET=UTF8 COLLATE utf8_unicode_ci" />
-		</modifySql>
-	</changeSet>
-	
-	
+    <changeSet id="create-user-table" author="alireza-fassih">
+        <createTable tableName="DASH_USER">
+            <column name="ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="USER_NAME" type="VARCHAR(255)">
+                <constraints unique="true"/>
+            </column>
+            <column name="PASSWORD" type="VARCHAR(255)"/>
+            <column name="ROLES" type="VARCHAR(255)"/>
+            <column name="INFO" type="TEXT"/>
+        </createTable>
+    </changeSet>
 
-	<changeSet author="alireza.fassih" id="add-admin-user">
-	    <insert tableName="DASH_USER">
-	        <column name="EMAIL" value="root" />
-	        <column name="PASSWORD" value="$2a$10$Vezo7p7ulOfDM0mOIHoqIeABvXes/E2j9Ru/zlGXpEIJRw1bmjlry" /> <!-- root1234 -->
-	        <column name="ROLES" value="PROGRAMMER,ADMIN,USER" /> <!-- root1234 -->
-	    </insert>
-	</changeSet>
 
-	
+    <changeSet author="alireza.fassih" id="add-admin-user">
+        <insert tableName="DASH_USER">
+            <column name="USER_NAME" value="root"/>
+            <column name="PASSWORD"
+                    value="$2a$10$Vezo7p7ulOfDM0mOIHoqIeABvXes/E2j9Ru/zlGXpEIJRw1bmjlry"/> <!-- root1234 -->
+            <column name="ROLES" value="PROGRAMMER,ADMIN,USER"/> <!-- root1234 -->
+        </insert>
+    </changeSet>
+
+    <changeSet id="create-rawMaterialCategory-table" author="alireza-fassih">
+        <createTable tableName="DASH_RAW_MATERIAL_CATEGORY">
+            <column name="ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="TITLE" type="VARCHAR(255)" >
+                <constraints unique="true" />
+            </column>
+            <column name="DELETED" type="BOOL" />
+        </createTable>
+    </changeSet>
 
 </databaseChangeLog>

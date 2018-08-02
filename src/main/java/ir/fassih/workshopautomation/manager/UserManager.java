@@ -1,29 +1,63 @@
 package ir.fassih.workshopautomation.manager;
 
+import ir.fassih.workshopautomation.entity.user.UserEntity;
+import ir.fassih.workshopautomation.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
-import ir.fassih.workshopautomation.entity.user.UserEntity;
-import ir.fassih.workshopautomation.repository.UserRepository;
-import lombok.AllArgsConstructor;
+import java.util.Optional;
 
 @Service
-@AllArgsConstructor(onConstructor=@__(@Autowired))
-public class UserManager implements UserDetailsService {
+public class UserManager extends AbstractManager<UserEntity, Long> implements UserDetailsService {
 
-	private UserRepository repository;
-	
-	
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		UserEntity user = repository.findByUsername(username);
-		if( user == null ) {
-			throw new UsernameNotFoundException( username + " not found" );
-		} 
-		return user;
-	}
+    private UserRepository getMyRepository() {
+        return (UserRepository) repository;
+    }
 
+    private BCryptPasswordEncoder encoder;
+
+    @Autowired
+    public UserManager(UserRepository repository, BCryptPasswordEncoder encoder) {
+        super(repository);
+        this.encoder = encoder;
+    }
+
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        UserEntity user = getMyRepository().findByUsername(username);
+        if (user == null) {
+            throw new UsernameNotFoundException(username + " not found");
+        }
+        return user;
+    }
+
+    @Override
+    @Transactional
+    public void save(UserEntity entity) {
+        if (StringUtils.hasText(entity.getNewPassword())) {
+            entity.setPassword(encoder.encode(entity.getNewPassword()));
+        }
+        repository.save(entity);
+    }
+
+    @Transactional
+    public void setEnable(Long id, boolean enable) {
+        UserEntity user = repository.findOne(id);
+        UserEntity.UserInfo userInfo = Optional.ofNullable(user.getInfo()).orElse(new UserEntity.UserInfo());
+        userInfo.setEnabled( enable );
+        user.setInfo( userInfo );
+        repository.save(user);
+    }
+
+    @Override
+    protected String[] ignoreFieldWhenUpdate() {
+        return new String[] { "password" , "info" };
+    }
 }
