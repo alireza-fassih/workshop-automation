@@ -10,7 +10,7 @@ import lombok.Data;
 public class SearchModel {
 
 	public enum SearchType {
-		EQ, NE, LT, GT, LE, GE;
+		EQ, NE, LT, GT, LE, GE, LIKE;
 		
 		public String getPrefix() {
 			return new StringBuilder().append( name() ).append( ":" ).toString();
