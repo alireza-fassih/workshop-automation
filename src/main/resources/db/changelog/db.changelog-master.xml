@@ -69,4 +69,17 @@
     </changeSet>
 
 
+    <changeSet id="create-goodsCategory-table" author="alireza-fassih">
+        <createTable tableName="DASH_GOODS_CATEGORY">
+            <column name="ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="TITLE" type="VARCHAR(255)">
+                <constraints unique="true"/>
+            </column>
+            <column name="DELETED" type="BOOL"/>
+        </createTable>
+    </changeSet>
+
+
 </databaseChangeLog>

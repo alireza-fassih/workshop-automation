@@ -1,8 +1,6 @@
 package ir.fassih.workshopautomation.entity.goodscategory;
 
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import groovy.transform.EqualsAndHashCode;
 import ir.fassih.workshopautomation.entity.core.AbstractBaseEntity;
@@ -10,15 +8,19 @@ import ir.fassih.workshopautomation.entity.core.LogicallyDeletable;
 import lombok.Data;
 
 @Data
-@Table(name="DASH_GOODS_CATEGORY")
-@MappedSuperclass
-@EqualsAndHashCode(callSuper=true)
-public class GoodsCategoryEntity extends AbstractBaseEntity implements LogicallyDeletable {
+@Table(name = "DASH_GOODS_CATEGORY")
+@Entity
+public class GoodsCategoryEntity implements LogicallyDeletable {
 
-	@Column(name = "TITLE")
-	private String title;
+    @Id
+    @Column(name = "ID")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    protected Long id;
 
-	@Column(name = "DELETED")
-	private boolean deleted = false;
+    @Column(name = "TITLE")
+    private String title;
+
+    @Column(name = "DELETED")
+    private boolean deleted = false;
 
 }
