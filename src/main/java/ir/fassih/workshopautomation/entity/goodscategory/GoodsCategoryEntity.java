@@ -2,8 +2,6 @@ package ir.fassih.workshopautomation.entity.goodscategory;
 
 import javax.persistence.*;
 
-import groovy.transform.EqualsAndHashCode;
-import ir.fassih.workshopautomation.entity.core.AbstractBaseEntity;
 import ir.fassih.workshopautomation.entity.core.LogicallyDeletable;
 import lombok.Data;
 

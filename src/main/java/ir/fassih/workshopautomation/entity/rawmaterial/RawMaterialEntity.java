@@ -2,8 +2,6 @@ package ir.fassih.workshopautomation.entity.rawmaterial;
 
 import javax.persistence.*;
 
-import groovy.transform.EqualsAndHashCode;
-import ir.fassih.workshopautomation.entity.core.AbstractBaseEntity;
 import ir.fassih.workshopautomation.entity.core.LogicallyDeletable;
 import ir.fassih.workshopautomation.entity.core.Traceable;
 import ir.fassih.workshopautomation.entity.rawmaterialcategory.RawMaterialCategoryEntity;

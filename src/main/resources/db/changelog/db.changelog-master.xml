@@ -48,9 +48,7 @@
             <column name="ID" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="TITLE" type="VARCHAR(255)">
-                <constraints unique="true"/>
-            </column>
+            <column name="TITLE" type="VARCHAR(255)" />
             <column name="DELETED" type="BOOL"/>
             <column name="UNIT_PRICE" type="BIGINT"/>
             <column name="CREATE_DATE" type="DATE"/>
@@ -79,6 +77,66 @@
             </column>
             <column name="DELETED" type="BOOL"/>
         </createTable>
+    </changeSet>
+
+    <changeSet id="create-goods-table" author="alireza-fassih">
+        <createTable tableName="DASH_GOODS">
+            <column name="ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="TITLE" type="VARCHAR(255)" />
+            <column name="DELETED" type="BOOL"/>
+            <column name="CREATE_DATE" type="DATE"/>
+            <column name="LAST_MODIFICATION_DATE" type="DATE"/>
+            <column name="CATEGORY" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="alireza-fassih" id="addGoods-to-goodsCategoryFK">
+        <addForeignKeyConstraint baseColumnNames="CATEGORY"
+                                 baseTableName="DASH_GOODS"
+                                 constraintName="fk-goods-goodsCategory"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="DASH_GOODS_CATEGORY"/>
+    </changeSet>
+
+
+    <changeSet id="create-goodsRawMaterial-table" author="alireza-fassih">
+        <createTable tableName="DASH_GOODS_RAW_MATERIAL">
+            <column name="ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="SELECT_ABLE" type="BOOL"/>
+            <column name="MATERIAL" type="BIGINT"/>
+            <column name="GOODS" type="BIGINT"/>
+            <column name="CATEGORY" type="BIGINT"/>
+            <column name="IMPORT_FACTOR" type="FLOAT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="alireza-fassih" id="addGoodsRM-to-Goods-FK">
+        <addForeignKeyConstraint baseColumnNames="GOODS"
+                                 baseTableName="DASH_GOODS_RAW_MATERIAL"
+                                 constraintName="fk-goodsRM-Goods"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="DASH_GOODS"/>
+    </changeSet>
+
+
+    <changeSet author="alireza-fassih" id="addGoodsRM-to-goodsCategoryFK">
+        <addForeignKeyConstraint baseColumnNames="CATEGORY"
+                                 baseTableName="DASH_GOODS_RAW_MATERIAL"
+                                 constraintName="fk-goodsRM-goodsCategory"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="DASH_GOODS_CATEGORY"/>
+    </changeSet>
+
+    <changeSet author="alireza-fassih" id="addGoodsRM-to-RM-FK">
+        <addForeignKeyConstraint baseColumnNames="MATERIAL"
+                                 baseTableName="DASH_GOODS_RAW_MATERIAL"
+                                 constraintName="fk-goodsRM-RawMaterial"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="DASH_RAW_MATERIAL"/>
     </changeSet>
 
 
