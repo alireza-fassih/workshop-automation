@@ -4,10 +4,12 @@ import javax.persistence.*;
 
 import ir.fassih.workshopautomation.entity.core.LogicallyDeletable;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 @Data
 @Table(name = "DASH_GOODS_CATEGORY")
 @Entity
+@Accessors(chain = true)
 public class GoodsCategoryEntity implements LogicallyDeletable {
 
     @Id
