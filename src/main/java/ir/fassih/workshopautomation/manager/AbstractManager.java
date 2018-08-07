@@ -131,6 +131,8 @@ public abstract class AbstractManager<T, I extends Serializable> {
             return convertToDate(value);
         } else if (Long.class.isAssignableFrom(javaType)) {
             return Long.parseLong(value);
+        } else if (Boolean.class.isAssignableFrom(javaType)) {
+            return Boolean.parseBoolean( value );
         }
         return value;
     }

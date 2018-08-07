@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 @Slf4j
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
-public abstract class AbstractRestService<T, I extends Serializable> {
+public abstract class AbstractRestService<T, I extends Serializable> implements RestUtils {
 
     protected final AbstractManager<T, I> manager;
 
@@ -63,16 +63,5 @@ public abstract class AbstractRestService<T, I extends Serializable> {
         return new HashMap<>();
     }
 
-    protected SearchModel createSearchModel(Map<String, String> param) {
-        int page = Integer.parseInt(param.get("page"));
-        int pageSize = Integer.parseInt(param.get("pageSize"));
-
-        param.remove("page");
-        param.remove("pageSize");
-
-        return SearchModel.builder()
-                .filters(param).page(page).pageSize(pageSize)
-                .build();
-    }
 
 }

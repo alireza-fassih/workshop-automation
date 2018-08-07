@@ -23,7 +23,7 @@ public class RawMaterialEntity implements LogicallyDeletable, Traceable {
     private String title;
 
     @Column(name = "DELETED")
-    private boolean deleted = false;
+    private Boolean deleted = false;
 
     @Column(name = "UNIT_PRICE")
     private Long unitPrice;

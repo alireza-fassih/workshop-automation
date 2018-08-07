@@ -21,6 +21,6 @@ public class RawMaterialCategoryEntity implements LogicallyDeletable {
     private String title;
 
     @Column(name = "DELETED")
-    private boolean deleted = false;
+    private Boolean deleted = false;
 
 }
