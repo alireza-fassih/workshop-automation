@@ -12,4 +12,11 @@ public class GoodsRawMaterialManager extends AbstractManager<GoodsRawMaterialEnt
     public GoodsRawMaterialManager(GoodsRawMaterialRepository repository) {
         super(repository);
     }
+
+
+    @Override
+    public void save(GoodsRawMaterialEntity entity) {
+        entity.setSelectAble( entity.getMaterial() == null );
+        super.save(entity);
+    }
 }
