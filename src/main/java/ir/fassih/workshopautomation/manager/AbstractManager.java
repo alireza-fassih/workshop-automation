@@ -1,8 +1,6 @@
 package ir.fassih.workshopautomation.manager;
 
 import java.io.Serializable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,7 +12,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import ir.fassih.workshopautomation.entity.core.Traceable;
-import org.h2.message.Trace;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -110,29 +107,35 @@ public abstract class AbstractManager<T, I extends Serializable> {
                 throw new IllegalStateException();
             }
 
-            Path<Object> element = root.get(field);
+            Path<Object> element = null;
+            if (field.contains(".")) {
+                for (String path : field.split("\\.")) {
+                    element = ( element == null ? root.get( path ) : element.get( path ) );
+                }
+            } else {
+                element = root.get(field);
+            }
+
             Object realVal = convertValue(element.getJavaType(), value);
 
             if (searchType == SearchType.EQ) {
                 predicates.add(builder.equal(element, realVal));
-            } else if( searchType == SearchType.LIKE ) {
-                builder.like(root.get(field), "%" + realVal);
+            } else if (searchType == SearchType.LIKE) {
+                builder.like(root.get(field), realVal.toString());
             }
         });
         return builder.and(predicates.toArray(new Predicate[]{}));
     }
 
-    private Date convertToDate(String value) {
-        return new Date(Long.parseLong(value));
-    }
+
 
     private Object convertValue(Class<?> javaType, String value) {
         if (Date.class.isAssignableFrom(javaType)) {
-            return convertToDate(value);
+            return new Date(Long.parseLong(value));
         } else if (Long.class.isAssignableFrom(javaType)) {
             return Long.parseLong(value);
         } else if (Boolean.class.isAssignableFrom(javaType)) {
-            return Boolean.parseBoolean( value );
+            return Boolean.parseBoolean(value);
         }
         return value;
     }
