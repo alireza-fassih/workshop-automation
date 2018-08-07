@@ -2,6 +2,7 @@ package ir.fassih.workshopautomation.rest;
 
 import ir.fassih.workshopautomation.core.datamanagment.model.SearchModel;
 import ir.fassih.workshopautomation.entity.goods.GoodsEntity;
+import ir.fassih.workshopautomation.entity.goodsrawmaterial.GoodsRawMaterialEntity;
 import ir.fassih.workshopautomation.manager.GoodsCategoryManager;
 import ir.fassih.workshopautomation.manager.GoodsManager;
 import lombok.AllArgsConstructor;
@@ -11,8 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @CrossOrigin("*")
 @RestController
@@ -41,6 +42,20 @@ public class OrderService implements RestUtils {
         return items;
     }
 
+    @GetMapping("/{id}")
+    public List<GoodsRawMaterialDto> loadGoodsMetadata(@PathVariable("id") Long id) {
+        return goodsManager.loadGoodsMetadata(id).stream().filter( GoodsRawMaterialEntity::isSelectAble )
+                .map( m -> mapper.map( m , GoodsRawMaterialDto.class ) )
+                .collect( Collectors.toList()) ;
+    }
+
+
+    @Data
+    public static class GoodsRawMaterialDto {
+        private String id;
+        private String title;
+        private Long categoryId;
+    }
 
     @Data
     public static class GoodsDto {

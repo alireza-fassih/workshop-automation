@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.Getter;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
 
@@ -43,7 +44,7 @@ public class GoodsEntity implements LogicallyDeletable , Traceable {
 
 
     @Getter(onMethod = @__(@JsonIgnore))
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "goods")
-    private Set<GoodsRawMaterialEntity> rawMaterials;
+    @OneToMany(mappedBy = "goods")
+    private Collection<GoodsRawMaterialEntity> rawMaterials;
 
 }
