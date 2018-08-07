@@ -116,7 +116,7 @@ public abstract class AbstractManager<T, I extends Serializable> {
             if (searchType == SearchType.EQ) {
                 predicates.add(builder.equal(element, realVal));
             } else if( searchType == SearchType.LIKE ) {
-                builder.like(root.get(field), "%" + realVal + "%");
+                builder.like(root.get(field), "%" + realVal);
             }
         });
         return builder.and(predicates.toArray(new Predicate[]{}));
