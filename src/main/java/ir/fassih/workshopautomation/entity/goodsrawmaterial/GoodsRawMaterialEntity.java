@@ -40,19 +40,10 @@ public class GoodsRawMaterialEntity {
 
     @ManyToOne
     @JoinColumn(name = "GOODS")
-    @Getter(onMethod = @__(@JsonIgnore))
     private GoodsEntity goods;
-
-    @Transient
-    private String goodsName;
 
     @Column(name = "IMPORT_FACTOR")
     private Float importFactor;
 
-
-    public String getGoodsName() {
-        return Optional.ofNullable( goods )
-            .map( GoodsEntity::getTitle ).orElse( "" );
-    }
 
 }
