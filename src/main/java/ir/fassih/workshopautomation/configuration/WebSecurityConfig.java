@@ -13,26 +13,27 @@ import ir.fassih.workshopautomation.manager.UserManager;
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http
-			.authorizeRequests()
-				.antMatchers("/rest/**", "/dashboard/**").hasAuthority("USER")
-				.and()
-			.formLogin()
-				.loginPage("/login").loginProcessingUrl("/login").failureUrl("/login?login_error=1")
-				.defaultSuccessUrl("/dashboard")
-			.usernameParameter("username").passwordParameter("password");
-	}
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/*").permitAll()
+                .antMatchers("/rest/**", "/dashboard/**").hasAuthority("USER")
+                .and()
+                .formLogin().permitAll()
+                .loginPage("/login").loginProcessingUrl("/login").failureUrl("/login")
+                .defaultSuccessUrl("/dashboard")
+                .usernameParameter("username").passwordParameter("password");
+    }
 
-	@Autowired
-	public void configGlobal(AuthenticationManagerBuilder builder, UserManager userManager) throws Exception {
-		builder.userDetailsService(userManager).passwordEncoder(passwordEncoder());
-	}
+    @Autowired
+    public void configGlobal(AuthenticationManagerBuilder builder, UserManager userManager) throws Exception {
+        builder.userDetailsService(userManager).passwordEncoder(passwordEncoder());
+    }
 
-	@Bean
-	public BCryptPasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }
 	
