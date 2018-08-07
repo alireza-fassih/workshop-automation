@@ -145,4 +145,63 @@
         </addColumn>
     </changeSet>
 
+
+    <changeSet id="create-order-table" author="alireza-fassih">
+        <createTable tableName="DASH_ORDER">
+            <column name="ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="GOODS" type="BIGINT"/>
+            <column name="COST" type="VARCHAR(255)"/>
+            <column name="CREATOR" type="BIGINT"/>
+            <column name="CREATE_DATE" type="DATE"/>
+            <column name="LAST_MODIFICATION_DATE" type="DATE"/>
+        </createTable>
+    </changeSet>
+
+
+    <changeSet author="alireza-fassih" id="addorder-to-userFK">
+        <addForeignKeyConstraint baseColumnNames="CREATOR"
+                                 baseTableName="DASH_ORDER"
+                                 constraintName="fk-creator-user"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="DASH_USER"/>
+    </changeSet>
+
+    <changeSet author="alireza-fassih" id="addOrder-to-goods-FK">
+        <addForeignKeyConstraint baseColumnNames="GOODS"
+                                 baseTableName="DASH_ORDER"
+                                 constraintName="fk-order-goods"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="DASH_GOODS"/>
+    </changeSet>
+
+
+    <changeSet id="create-orderItem-table" author="alireza-fassih">
+        <createTable tableName="DASH_ORDER_ITEM">
+            <column name="ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="ORDER_ID" type="BIGINT"/>
+            <column name="RAW_MATERIAL" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+
+
+    <changeSet author="alireza-fassih" id="add_orderItem-to-orderFK">
+        <addForeignKeyConstraint baseColumnNames="ORDER_ID"
+                                 baseTableName="DASH_ORDER_ITEM"
+                                 constraintName="fk-orderItem-order"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="DASH_ORDER"/>
+    </changeSet>
+
+    <changeSet author="alireza-fassih" id="add-orderItem-to-RM-FK">
+        <addForeignKeyConstraint baseColumnNames="RAW_MATERIAL"
+                                 baseTableName="DASH_ORDER_ITEM"
+                                 constraintName="fk-orderItem-RM"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="DASH_RAW_MATERIAL"/>
+    </changeSet>
+
 </databaseChangeLog>
