@@ -1,6 +1,7 @@
 package ir.fassih.workshopautomation.entity.order;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import ir.fassih.workshopautomation.entity.core.Traceable;
 import ir.fassih.workshopautomation.entity.goods.GoodsEntity;
 import ir.fassih.workshopautomation.entity.goodsrawmaterial.GoodsRawMaterialEntity;
@@ -9,6 +10,7 @@ import lombok.Data;
 import lombok.Getter;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
 
@@ -22,6 +24,8 @@ public class OrderEntity implements Traceable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
 
+    @Column(name = "TITLE")
+    private String title;
 
     @ManyToOne
     @JoinColumn(name = "CREATOR")
@@ -30,14 +34,11 @@ public class OrderEntity implements Traceable {
 
     @ManyToOne
     @JoinColumn(name = "GOODS")
+    @JsonIgnore
     private GoodsEntity goods;
 
-    @Column(name = "COST")
-    private String cost;
-
-    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "order")
-    private Set<OrderItemEntity> items;
+    private Collection<OrderItemEntity> items;
 
     @Column(name = "CREATE_DATE")
     private Date createDate;

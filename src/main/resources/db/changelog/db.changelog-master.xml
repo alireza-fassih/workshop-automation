@@ -204,4 +204,46 @@
                                  referencedTableName="DASH_RAW_MATERIAL"/>
     </changeSet>
 
+    <changeSet id="add-metadata-column-order-item" author="alireza-fassih">
+        <addColumn tableName="DASH_ORDER_ITEM">
+            <column name="GOODS_RAW_MATERIAL" type="BIGINT"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="alireza-fassih" id="add-orderItem-to-RMMetadata-FK">
+        <addForeignKeyConstraint baseColumnNames="RAW_MATERIAL"
+                                 baseTableName="DASH_ORDER_ITEM"
+                                 constraintName="fk-orderItem-RMMetadata"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="DASH_GOODS_RAW_MATERIAL"/>
+    </changeSet>
+
+
+    <changeSet id="add-title-column-order-item" author="alireza-fassih">
+        <addColumn tableName="DASH_ORDER_ITEM">
+            <column name="TITLE" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+
+
+
+
+    <changeSet id="add-price-column-order-item" author="alireza-fassih">
+        <addColumn tableName="DASH_ORDER_ITEM">
+            <column name="PRICE" type="BIGINT"/>
+        </addColumn>
+    </changeSet>
+
+
+    <changeSet id="drop-price-column-order" author="alireza-fassih">
+        <dropColumn tableName="DASH_ORDER" columnName="COST" />
+    </changeSet>
+
+
+    <changeSet id="add-title-column-order" author="alireza-fassih">
+        <addColumn tableName="DASH_ORDER">
+            <column name="TITLE" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

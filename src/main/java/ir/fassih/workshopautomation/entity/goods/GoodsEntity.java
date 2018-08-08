@@ -7,6 +7,7 @@ import ir.fassih.workshopautomation.entity.goodscategory.GoodsCategoryEntity;
 import ir.fassih.workshopautomation.entity.goodsrawmaterial.GoodsRawMaterialEntity;
 import lombok.Data;
 import lombok.Getter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -16,6 +17,7 @@ import java.util.Set;
 @Data
 @Table(name = "DASH_GOODS")
 @Entity
+@ToString(exclude = "rawMaterials")
 public class GoodsEntity implements LogicallyDeletable , Traceable {
 
 

@@ -3,10 +3,13 @@ package ir.fassih.workshopautomation.rest;
 import ir.fassih.workshopautomation.core.datamanagment.model.SearchModel;
 import ir.fassih.workshopautomation.entity.goods.GoodsEntity;
 import ir.fassih.workshopautomation.entity.goodsrawmaterial.GoodsRawMaterialEntity;
+import ir.fassih.workshopautomation.entity.order.OrderEntity;
+import ir.fassih.workshopautomation.entity.order.OrderItemEntity;
 import ir.fassih.workshopautomation.manager.GoodsCategoryManager;
 import ir.fassih.workshopautomation.manager.GoodsManager;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Value;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,10 +29,10 @@ public class OrderService implements RestUtils {
     private GoodsCategoryManager categoryManager;
 
     @GetMapping("/search")
-    public Page<GoodsDto> loadItems(@RequestParam Map<String, String> params) {
+    public Page<GoodsListDto> loadItems(@RequestParam Map<String, String> params) {
         SearchModel searchModel = createSearchModel(params);
         searchModel.getFilters().put("EQ:deleted", "false");
-        return goodsManager.search(searchModel).map(source -> mapper.map(source, GoodsDto.class));
+        return goodsManager.search(searchModel).map(source -> mapper.map(source, GoodsListDto.class));
     }
 
 
@@ -43,12 +46,27 @@ public class OrderService implements RestUtils {
     }
 
     @GetMapping("/{id}")
-    public List<GoodsRawMaterialDto> loadGoodsMetadata(@PathVariable("id") Long id) {
-        return goodsManager.loadGoodsMetadata(id).stream().filter( GoodsRawMaterialEntity::isSelectAble )
-                .map( m -> mapper.map( m , GoodsRawMaterialDto.class ) )
-                .collect( Collectors.toList()) ;
+    public GoodsDto loadGoodsMetadata(@PathVariable("id") Long id) {
+        GoodsEntity entity = goodsManager.find(id);
+        List<GoodsRawMaterialDto> items = entity.getRawMaterials().stream().filter(GoodsRawMaterialEntity::isSelectAble)
+                .map(m -> mapper.map(m, GoodsRawMaterialDto.class))
+                .collect(Collectors.toList());
+        return new GoodsDto(entity.getTitle(), items);
     }
 
+    @PostMapping("/{id}/calculatePrice")
+    public OrderEntity calculatePrice(@PathVariable("id") Long id, @RequestBody List<OrderItemEntity> items) {
+        return goodsManager.calculatePrice(id, items);
+    }
+
+
+
+
+    @Value
+    public static class GoodsDto {
+        private String title;
+        private List<GoodsRawMaterialDto> items;
+    }
 
     @Data
     public static class GoodsRawMaterialDto {
@@ -58,7 +76,7 @@ public class OrderService implements RestUtils {
     }
 
     @Data
-    public static class GoodsDto {
+    public static class GoodsListDto {
         private Long id;
         private String title;
         private String categoryTitle;
@@ -69,4 +87,5 @@ public class OrderService implements RestUtils {
         private Long id;
         private String title;
     }
+
 }
