@@ -10,9 +10,11 @@ import lombok.Data;
 import lombok.Getter;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Set;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.*;
 
 @Data
 @Table(name = "DASH_ORDER")
@@ -45,5 +47,16 @@ public class OrderEntity implements Traceable {
 
     @Column(name = "LAST_MODIFICATION_DATE")
     private Date lastModificationDate;
+
+    @Transient
+    public boolean isEditable() {
+        Calendar calStart = new GregorianCalendar();
+        calStart.setTime(new Date());
+        calStart.set(Calendar.HOUR_OF_DAY, 0);
+        calStart.set(Calendar.MINUTE, 0);
+        calStart.set(Calendar.SECOND, 0);
+        calStart.set(Calendar.MILLISECOND, 0);
+        return calStart.getTime().equals( createDate );
+    }
 
 }

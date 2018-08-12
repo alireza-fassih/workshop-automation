@@ -1,5 +1,6 @@
 package ir.fassih.workshopautomation.core.datamanagment.model;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import lombok.Builder;
@@ -17,7 +18,7 @@ public class SearchModel {
 		}
 	}
 
-	private Map<String, String> filters;
+	private Map<String, String> filters = new LinkedHashMap<>();
 
 	@Builder.Default
 	private int pageSize = 20;

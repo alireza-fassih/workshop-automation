@@ -1,24 +1,18 @@
 package ir.fassih.workshopautomation.rest;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.persistence.MappedSuperclass;
-import javax.servlet.http.HttpServletRequest;
-import javax.websocket.server.PathParam;
-
-import ir.fassih.workshopautomation.core.datamanagment.model.SearchModel;
+import ir.fassih.workshopautomation.manager.AbstractManager;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
-import ir.fassih.workshopautomation.manager.AbstractManager;
-import lombok.RequiredArgsConstructor;
+import javax.websocket.server.PathParam;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Slf4j
-@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public abstract class AbstractRestService<T, I extends Serializable> implements RestUtils {
 
