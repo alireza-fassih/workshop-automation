@@ -28,10 +28,16 @@ public class UserManager extends AbstractManager<UserEntity, Long> implements Us
         this.encoder = encoder;
     }
 
+    @Transactional(readOnly = true)
+    public UserEntity loadByUsername(String username) {
+        return getMyRepository().findByUsername(username);
+    }
+
 
     @Override
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity user = getMyRepository().findByUsername(username);
+        UserEntity user = loadByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException(username + " not found");
         }

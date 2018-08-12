@@ -2,9 +2,7 @@
 <databaseChangeLog
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
-        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <changeSet id="create-user-table" author="alireza-fassih">
         <createTable tableName="DASH_USER">
@@ -210,10 +208,10 @@
         </addColumn>
     </changeSet>
 
-    <changeSet author="alireza-fassih" id="add-orderItem-to-RMMetadata-FK">
-        <addForeignKeyConstraint baseColumnNames="RAW_MATERIAL"
+    <changeSet author="alireza-fassih" id="add-orderItem-to-GRMMetadata-FK">
+        <addForeignKeyConstraint baseColumnNames="GOODS_RAW_MATERIAL"
                                  baseTableName="DASH_ORDER_ITEM"
-                                 constraintName="fk-orderItem-RMMetadata"
+                                 constraintName="fk-orderItem-GRMMetadata"
                                  referencedColumnNames="ID"
                                  referencedTableName="DASH_GOODS_RAW_MATERIAL"/>
     </changeSet>
@@ -245,5 +243,7 @@
             <column name="TITLE" type="VARCHAR(255)"/>
         </addColumn>
     </changeSet>
+
+
 
 </databaseChangeLog>

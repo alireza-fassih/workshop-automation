@@ -5,12 +5,17 @@ import ir.fassih.workshopautomation.entity.goodsrawmaterial.GoodsRawMaterialEnti
 import ir.fassih.workshopautomation.entity.order.OrderEntity;
 import ir.fassih.workshopautomation.entity.order.OrderItemEntity;
 import ir.fassih.workshopautomation.entity.rawmaterial.RawMaterialEntity;
+import ir.fassih.workshopautomation.entity.user.UserEntity;
 import ir.fassih.workshopautomation.repository.GoodsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -18,21 +23,36 @@ import java.util.stream.Collectors;
 public class GoodsManager extends AbstractManager<GoodsEntity, Long> {
 
     private RawMaterialManager rawMaterialManager;
+    private UserManager userManager;
+    private OrderManager orderManager;
+
 
     @Autowired
-    public GoodsManager(GoodsRepository repository, RawMaterialManager rawMaterialManager) {
+    public GoodsManager(GoodsRepository repository, RawMaterialManager rawMaterialManager,
+                        UserManager userManager, OrderManager orderManager) {
         super(repository);
         this.rawMaterialManager = rawMaterialManager;
+        this.userManager = userManager;
+        this.orderManager = orderManager;
     }
 
+    @Transactional
+    public void submitOrder(Long id, List<OrderItemEntity> orders, Principal principal) {
+        OrderEntity orderEntity = calculatePrice(id, orders);
+        if( principal != null ) {
+            UserEntity userEntity = userManager.loadByUsername(principal.getName());
+            orderEntity.setCreator(userEntity);
+        }
+        orderManager.save( orderEntity );
+    }
 
     @Transactional(readOnly = true)
     public OrderEntity calculatePrice(Long id, List<OrderItemEntity> orders) {
         OrderEntity orderEntity = new OrderEntity();
         List<OrderItemEntity> orderItems = new ArrayList<>();
         GoodsEntity entity = find(id);
-        orderEntity.setTitle( entity.getTitle() );
-        orderEntity.setGoods( entity );
+        orderEntity.setTitle(entity.getTitle());
+        orderEntity.setGoods(entity);
         Map<Boolean, List<GoodsRawMaterialEntity>> items =
                 entity.getRawMaterials().stream().collect(Collectors.groupingBy(GoodsRawMaterialEntity::isSelectAble));
 
@@ -67,7 +87,7 @@ public class GoodsManager extends AbstractManager<GoodsEntity, Long> {
                 throw new IllegalStateException();
             }
             OrderItemEntity item = new OrderItemEntity();
-            item.setTitle(goodsRawMaterialEntity.getTitle() + ":( " + rawMaterialEntity.getTitle() +" )");
+            item.setTitle(goodsRawMaterialEntity.getTitle() + ":( " + rawMaterialEntity.getTitle() + " )");
             item.setOrder(orderEntity);
             item.setMetadata(goodsRawMaterialEntity);
             item.setMaterial(rawMaterialEntity);
