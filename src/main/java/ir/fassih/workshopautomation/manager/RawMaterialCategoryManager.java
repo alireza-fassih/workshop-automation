@@ -4,13 +4,23 @@ import ir.fassih.workshopautomation.entity.rawmaterialcategory.RawMaterialCatego
 import ir.fassih.workshopautomation.repository.RawMaterialCategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
-public class RawMaterialCategoryManager extends  AbstractManager<RawMaterialCategoryEntity, Long> {
+public class RawMaterialCategoryManager extends AbstractManager<RawMaterialCategoryEntity, Long> {
 
     @Autowired
     public RawMaterialCategoryManager(RawMaterialCategoryRepository repository) {
         super(repository);
     }
 
+    @Transactional(readOnly = true)
+    public List<RawMaterialCategoryEntity> loadNotDeletes() {
+        return repository.findAll(
+            (root, query, builder) ->
+                builder.or(builder.notEqual(root.get("deleted"), Boolean.TRUE), builder.isNull(root.get("deleted")))
+        );
+    }
 }
