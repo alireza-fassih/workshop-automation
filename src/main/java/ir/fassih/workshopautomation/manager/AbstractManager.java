@@ -127,7 +127,13 @@ public abstract class AbstractManager<T, I extends Serializable> {
         return builder.and(predicates.toArray(new Predicate[]{}));
     }
 
-
+    @Transactional(readOnly = true)
+    public List<T> loadNotDeletes() {
+        return repository.findAll(
+            (root, query, builder) ->
+                builder.or(builder.notEqual(root.get("deleted"), Boolean.TRUE), builder.isNull(root.get("deleted")))
+        );
+    }
 
     private Object convertValue(Class<?> javaType, String value) {
         if (Date.class.isAssignableFrom(javaType)) {

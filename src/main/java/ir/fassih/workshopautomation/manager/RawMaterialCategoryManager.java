@@ -16,11 +16,5 @@ public class RawMaterialCategoryManager extends AbstractManager<RawMaterialCateg
         super(repository);
     }
 
-    @Transactional(readOnly = true)
-    public List<RawMaterialCategoryEntity> loadNotDeletes() {
-        return repository.findAll(
-            (root, query, builder) ->
-                builder.or(builder.notEqual(root.get("deleted"), Boolean.TRUE), builder.isNull(root.get("deleted")))
-        );
-    }
+
 }

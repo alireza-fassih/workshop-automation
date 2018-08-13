@@ -1,6 +1,7 @@
 package ir.fassih.workshopautomation.manager;
 
 import ir.fassih.workshopautomation.entity.goods.GoodsEntity;
+import ir.fassih.workshopautomation.entity.goodscategory.GoodsCategoryEntity;
 import ir.fassih.workshopautomation.entity.goodsrawmaterial.GoodsRawMaterialEntity;
 import ir.fassih.workshopautomation.entity.order.OrderEntity;
 import ir.fassih.workshopautomation.entity.order.OrderItemEntity;
@@ -25,15 +26,18 @@ public class GoodsManager extends AbstractManager<GoodsEntity, Long> {
     private RawMaterialManager rawMaterialManager;
     private UserManager userManager;
     private OrderManager orderManager;
+    private GoodsCategoryManager categoryManager;
 
 
     @Autowired
     public GoodsManager(GoodsRepository repository, RawMaterialManager rawMaterialManager,
-                        UserManager userManager, OrderManager orderManager) {
+                        UserManager userManager, OrderManager orderManager,
+                        GoodsCategoryManager categoryManager) {
         super(repository);
         this.rawMaterialManager = rawMaterialManager;
         this.userManager = userManager;
         this.orderManager = orderManager;
+        this.categoryManager = categoryManager;
     }
 
     @Transactional
@@ -98,4 +102,8 @@ public class GoodsManager extends AbstractManager<GoodsEntity, Long> {
         return orderEntity;
     }
 
+    @Transactional(readOnly = true)
+    public List<GoodsCategoryEntity> loadAllCategories() {
+        return categoryManager.loadNotDeletes();
+    }
 }

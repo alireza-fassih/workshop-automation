@@ -9,6 +9,8 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 
 @RestController
 @RequestMapping("/rest/goods")
@@ -24,4 +26,11 @@ public class GoodsService extends AbstractRestService<GoodsEntity, Long> {
         return ( GoodsManager ) manager;
     }
 
+
+    @Override
+    protected Map<String, Object> optionsInternal() {
+        Map<String, Object> props = super.optionsInternal();
+        props.put("categories", getMyManager().loadAllCategories());
+        return props;
+    }
 }
