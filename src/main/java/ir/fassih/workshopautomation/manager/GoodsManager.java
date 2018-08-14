@@ -8,6 +8,8 @@ import ir.fassih.workshopautomation.entity.order.OrderItemEntity;
 import ir.fassih.workshopautomation.entity.rawmaterial.RawMaterialEntity;
 import ir.fassih.workshopautomation.entity.user.UserEntity;
 import ir.fassih.workshopautomation.repository.GoodsRepository;
+import lombok.Data;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class GoodsManager extends AbstractManager<GoodsEntity, Long> {
+
+
+    @Autowired
+    private ModelMapper mapper;
 
     private RawMaterialManager rawMaterialManager;
     private UserManager userManager;
@@ -43,11 +49,11 @@ public class GoodsManager extends AbstractManager<GoodsEntity, Long> {
     @Transactional
     public void submitOrder(Long id, List<OrderItemEntity> orders, Principal principal) {
         OrderEntity orderEntity = calculatePrice(id, orders);
-        if( principal != null ) {
+        if (principal != null) {
             UserEntity userEntity = userManager.loadByUsername(principal.getName());
             orderEntity.setCreator(userEntity);
         }
-        orderManager.save( orderEntity );
+        orderManager.save(orderEntity);
     }
 
     @Transactional(readOnly = true)
@@ -105,5 +111,41 @@ public class GoodsManager extends AbstractManager<GoodsEntity, Long> {
     @Transactional(readOnly = true)
     public List<GoodsCategoryEntity> loadAllCategories() {
         return categoryManager.loadNotDeletes();
+    }
+
+
+    @Transactional(readOnly = true)
+    public ProductMetadata loadMetadataForCreateOrder(Long id) {
+        GoodsEntity product = repository.findOne(id);
+        ProductMetadata productMetadata = mapper.map(product, ProductMetadata.class);
+        productMetadata.setMetadata(product.getRawMaterials().stream().filter(GoodsRawMaterialEntity::isSelectAble)
+            .map(gr -> mapper.map(gr, MaterialMetadata.class)).collect(Collectors.toList()));
+        for (MaterialMetadata m : productMetadata.getMetadata()) {
+            m.setValues(
+                rawMaterialManager.findByCategory(m.getCategoryId())
+                    .stream().map(r -> mapper.map(r, MaterialValue.class))
+                    .collect(Collectors.toList()));
+        }
+        return productMetadata;
+    }
+
+    @Data
+    public static class ProductMetadata {
+        private String title;
+        private List<MaterialMetadata> metadata;
+    }
+
+    @Data
+    public static class MaterialMetadata {
+        private Long id;
+        private String title;
+        private Long categoryId;
+        private List<MaterialValue> values;
+    }
+
+    @Data
+    public static class MaterialValue {
+        private Long id;
+        private String title;
     }
 }

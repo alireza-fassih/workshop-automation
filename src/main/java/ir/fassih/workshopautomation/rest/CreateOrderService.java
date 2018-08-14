@@ -48,12 +48,8 @@ public class CreateOrderService implements RestUtils {
     }
 
     @GetMapping("/{id}")
-    public GoodsDto loadGoodsMetadata(@PathVariable("id") Long id) {
-        GoodsEntity entity = goodsManager.find(id);
-        List<GoodsRawMaterialDto> items = entity.getRawMaterials().stream().filter(GoodsRawMaterialEntity::isSelectAble)
-                .map(m -> mapper.map(m, GoodsRawMaterialDto.class))
-                .collect(Collectors.toList());
-        return new GoodsDto(entity.getTitle(), items);
+    public GoodsManager.ProductMetadata loadGoodsMetadata(@PathVariable("id") Long id) {
+        return goodsManager.loadMetadataForCreateOrder(id);
     }
 
     @PostMapping("/{id}/calculatePrice")
@@ -67,19 +63,6 @@ public class CreateOrderService implements RestUtils {
         goodsManager.submitOrder(id, items, principal);
     }
 
-
-    @Value
-    public static class GoodsDto {
-        private String title;
-        private List<GoodsRawMaterialDto> items;
-    }
-
-    @Data
-    public static class GoodsRawMaterialDto {
-        private String id;
-        private String title;
-        private Long categoryId;
-    }
 
     @Data
     public static class GoodsListDto {
