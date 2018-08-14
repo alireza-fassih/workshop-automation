@@ -1,17 +1,10 @@
 package ir.fassih.workshopautomation.manager;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
+import ir.fassih.workshopautomation.core.datamanagment.model.SearchModel;
+import ir.fassih.workshopautomation.core.datamanagment.model.SearchModel.SearchType;
 import ir.fassih.workshopautomation.entity.core.Traceable;
+import ir.fassih.workshopautomation.repository.AbstractRepository;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -20,10 +13,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 
-import ir.fassih.workshopautomation.core.datamanagment.model.SearchModel;
-import ir.fassih.workshopautomation.core.datamanagment.model.SearchModel.SearchType;
-import ir.fassih.workshopautomation.repository.AbstractRepository;
-import lombok.RequiredArgsConstructor;
+import javax.persistence.criteria.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @RequiredArgsConstructor
 public abstract class AbstractManager<T, I extends Serializable> {
@@ -51,6 +45,13 @@ public abstract class AbstractManager<T, I extends Serializable> {
     @Transactional
     public void delete(I id) {
         repository.delete(id);
+    }
+
+
+
+    @Transactional(readOnly = true)
+    public Iterable<T> loadAll() {
+        return repository.findAll();
     }
 
     @Transactional(readOnly = true)

@@ -245,5 +245,24 @@
     </changeSet>
 
 
+    <changeSet id="create-orderState-table" author="alireza-fassih">
+        <createTable tableName="DASH_ORDER_STATE">
+            <column name="ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="TITLE" type="VARCHAR(255)">
+                <constraints unique="true"/>
+            </column>
+            <column name="PARENT" type="BIGINT" />
+        </createTable>
+    </changeSet>
+
+    <changeSet author="alireza-fassih" id="add-orderState-to-orderState-FK">
+        <addForeignKeyConstraint baseColumnNames="PARENT"
+                                 baseTableName="DASH_ORDER_STATE"
+                                 constraintName="fk-orderState-to-orderState"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="DASH_ORDER_STATE"/>
+    </changeSet>
 
 </databaseChangeLog>
