@@ -5,6 +5,7 @@ import ir.fassih.workshopautomation.entity.core.LogicallyDeletable;
 import ir.fassih.workshopautomation.entity.core.Traceable;
 import ir.fassih.workshopautomation.entity.goodscategory.GoodsCategoryEntity;
 import ir.fassih.workshopautomation.entity.goodsrawmaterial.GoodsRawMaterialEntity;
+import ir.fassih.workshopautomation.entity.orderstate.OrderStateEntity;
 import lombok.Data;
 import lombok.Getter;
 import lombok.ToString;
@@ -49,4 +50,8 @@ public class GoodsEntity implements LogicallyDeletable , Traceable {
     @OneToMany(mappedBy = "goods")
     private Collection<GoodsRawMaterialEntity> rawMaterials;
 
+
+    @ManyToOne
+    @JoinColumn(name = "FIRST_STATE")
+    private OrderStateEntity firstState;
 }

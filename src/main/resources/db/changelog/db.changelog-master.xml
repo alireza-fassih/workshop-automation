@@ -279,4 +279,21 @@
                                  referencedTableName="DASH_RAW_MATERIAL_CATEGORY"/>
     </changeSet>
 
+
+    <changeSet id="add-startStateToGoods" author="alireza-fassih">
+        <addColumn tableName="DASH_GOODS">
+            <column name="FIRST_STATE" type="BIGINT"/>
+        </addColumn>
+    </changeSet>
+
+
+
+    <changeSet author="alireza-fassih" id="addGoodsFirstState-to-OrderStateFK">
+        <addForeignKeyConstraint baseColumnNames="FIRST_STATE"
+                                 baseTableName="DASH_GOODS"
+                                 constraintName="fk-goods-orderState"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="DASH_ORDER_STATE"/>
+    </changeSet>
+
 </databaseChangeLog>
