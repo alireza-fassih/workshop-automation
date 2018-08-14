@@ -265,4 +265,18 @@
                                  referencedTableName="DASH_ORDER_STATE"/>
     </changeSet>
 
+    <changeSet id="drop-fk-fk-goodsRM-goodsCategory" author="alireza.fassih">
+        <dropForeignKeyConstraint baseTableName="DASH_GOODS_RAW_MATERIAL"
+              constraintName="fk-goodsRM-goodsCategory" />
+    </changeSet>
+
+
+    <changeSet author="alireza-fassih" id="addGoodsRM-to-goodsCategory-newFK">
+        <addForeignKeyConstraint baseColumnNames="CATEGORY"
+                                 baseTableName="DASH_GOODS_RAW_MATERIAL"
+                                 constraintName="fk-goodsRM-goodsCategory-new"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="DASH_RAW_MATERIAL_CATEGORY"/>
+    </changeSet>
+
 </databaseChangeLog>
