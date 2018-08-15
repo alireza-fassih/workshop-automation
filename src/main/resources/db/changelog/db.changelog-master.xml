@@ -296,4 +296,43 @@
                                  referencedTableName="DASH_ORDER_STATE"/>
     </changeSet>
 
+
+    <changeSet id="create-orderToState-table" author="alireza-fassih">
+        <createTable tableName="DASH_ORDER_TO_STATE">
+            <column name="ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="ORDER_ID" type="BIGINT" >
+                <constraints foreignKeyName="fk-orderToOrderState"
+                     referencedColumnNames="ID" referencedTableName="DASH_ORDER" />
+            </column>
+            <column name="ORDER_STATE_TITLE" type="VARCHAR(255)" />
+            <column name="CREATE_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="stateofOrder-dropTitle" author="alireza-fassih">
+        <dropColumn tableName="DASH_ORDER_TO_STATE" columnName="ORDER_STATE_TITLE" />
+    </changeSet>
+
+    <changeSet id="add-orderStateToStateOfOrder" author="alireza-fassih">
+        <addColumn tableName="DASH_ORDER_TO_STATE">
+            <column name="STATE_ID" type="BIGINT">
+                <constraints foreignKeyName="fk-stateOfOrderToState"
+                         referencedTableName="DASH_ORDER_STATE" referencedColumnNames="ID" />
+            </column>
+        </addColumn>
+    </changeSet>
+
+
+    <changeSet id="add-lastStateIdToOrder" author="alireza-fassih">
+        <addColumn tableName="DASH_ORDER">
+            <column name="CURRENT_STATE_ID" type="BIGINT">
+                <constraints foreignKeyName="fk-currentStateOfOrderToState"
+                             referencedTableName="DASH_ORDER_STATE" referencedColumnNames="ID" />
+            </column>
+        </addColumn>
+    </changeSet>
+
+
 </databaseChangeLog>

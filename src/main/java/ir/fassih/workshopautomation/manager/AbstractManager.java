@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,7 +49,6 @@ public abstract class AbstractManager<T, I extends Serializable> {
     }
 
 
-
     @Transactional(readOnly = true)
     public Iterable<T> loadAll() {
         return repository.findAll();
@@ -78,7 +78,7 @@ public abstract class AbstractManager<T, I extends Serializable> {
     @Transactional(readOnly = true)
     public Page<T> search(SearchModel model) {
         Specification<T> specification = createSpecification(model);
-        return repository.findAll(specification, new PageRequest(model.getPage(), model.getPageSize()));
+        return repository.findAll(specification, new PageRequest(model.getPage(), model.getPageSize(), new Sort(Sort.Direction.DESC, "id")));
     }
 
     private Specification<T> createSpecification(SearchModel model) {
@@ -111,7 +111,7 @@ public abstract class AbstractManager<T, I extends Serializable> {
             Path<Object> element = null;
             if (field.contains(".")) {
                 for (String path : field.split("\\.")) {
-                    element = ( element == null ? root.get( path ) : element.get( path ) );
+                    element = (element == null ? root.get(path) : element.get(path));
                 }
             } else {
                 element = root.get(field);
@@ -131,8 +131,8 @@ public abstract class AbstractManager<T, I extends Serializable> {
     @Transactional(readOnly = true)
     public List<T> loadNotDeletes() {
         return repository.findAll(
-            (root, query, builder) ->
-                builder.or(builder.notEqual(root.get("deleted"), Boolean.TRUE), builder.isNull(root.get("deleted")))
+                (root, query, builder) ->
+                        builder.or(builder.notEqual(root.get("deleted"), Boolean.TRUE), builder.isNull(root.get("deleted")))
         );
     }
 

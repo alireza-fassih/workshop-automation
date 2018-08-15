@@ -4,6 +4,7 @@ import ir.fassih.workshopautomation.core.datamanagment.model.SearchModel;
 import ir.fassih.workshopautomation.entity.order.OrderEntity;
 import ir.fassih.workshopautomation.manager.GoodsManager;
 import ir.fassih.workshopautomation.manager.OrderManager;
+import ir.fassih.workshopautomation.manager.OrderStateManager;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/rest/myOrder")
@@ -27,6 +29,8 @@ public class MyOrderService extends AbstractRestService<OrderEntity, Long> {
     @Autowired
     private GoodsManager goodsManager;
 
+    @Autowired
+    private OrderStateManager orderStateManager;
 
     @Autowired
     public MyOrderService(OrderManager manager) {
@@ -46,6 +50,7 @@ public class MyOrderService extends AbstractRestService<OrderEntity, Long> {
         Map<String, Object> optionsInternal = super.optionsInternal();
         optionsInternal.put("products", goodsManager.loadNotDeletes().stream().map(p -> mapper.map(p, ProductDto.class))
                 .collect(Collectors.toList()));
+        optionsInternal.put("states", orderStateManager.loadAll());
         return optionsInternal;
     }
 

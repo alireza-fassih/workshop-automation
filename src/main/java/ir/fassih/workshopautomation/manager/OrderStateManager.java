@@ -19,4 +19,10 @@ public class OrderStateManager extends AbstractManager<OrderStateEntity, Long> {
     public Iterable<OrderStateEntity> loadFirstStates() {
         return repository.findAll(( root, q, cb) -> cb.isNull( root.get("parent") ));
     }
+
+    @Transactional(readOnly = true)
+    public OrderStateEntity nextOf(OrderStateEntity entity) {
+        return repository.findOne((root, query, cb) -> cb.equal( root.get("parent"), entity.getId()));
+    }
+
 }

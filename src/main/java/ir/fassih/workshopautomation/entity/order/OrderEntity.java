@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import ir.fassih.workshopautomation.entity.core.Traceable;
 import ir.fassih.workshopautomation.entity.goods.GoodsEntity;
 import ir.fassih.workshopautomation.entity.goodsrawmaterial.GoodsRawMaterialEntity;
+import ir.fassih.workshopautomation.entity.orderstate.OrderStateEntity;
 import ir.fassih.workshopautomation.entity.user.UserEntity;
 import lombok.Data;
 import lombok.Getter;
@@ -42,6 +43,9 @@ public class OrderEntity implements Traceable {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "order")
     private Collection<OrderItemEntity> items;
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "order")
+    private Collection<StateOfOrderEntity> states;
+
     @Column(name = "CREATE_DATE")
     private Date createDate;
 
@@ -56,7 +60,20 @@ public class OrderEntity implements Traceable {
         calStart.set(Calendar.MINUTE, 0);
         calStart.set(Calendar.SECOND, 0);
         calStart.set(Calendar.MILLISECOND, 0);
-        return calStart.getTime().equals( createDate );
+        OrderStateEntity currentState = getCurrentState();
+        return calStart.getTime().equals(createDate) &&
+            currentState != null && currentState.getParent() == null;
     }
 
+    @ManyToOne
+    @JoinColumn(name = "CURRENT_STATE_ID")
+    private OrderStateEntity currentState;
+
+    public void putToState(StateOfOrderEntity state) {
+        if (states == null) {
+            states = new ArrayList<>();
+        }
+        states.add(state);
+        setCurrentState(state.getState());
+    }
 }

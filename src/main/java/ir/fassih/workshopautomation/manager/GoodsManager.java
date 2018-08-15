@@ -5,6 +5,7 @@ import ir.fassih.workshopautomation.entity.goodscategory.GoodsCategoryEntity;
 import ir.fassih.workshopautomation.entity.goodsrawmaterial.GoodsRawMaterialEntity;
 import ir.fassih.workshopautomation.entity.order.OrderEntity;
 import ir.fassih.workshopautomation.entity.order.OrderItemEntity;
+import ir.fassih.workshopautomation.entity.order.StateOfOrderEntity;
 import ir.fassih.workshopautomation.entity.rawmaterial.RawMaterialEntity;
 import ir.fassih.workshopautomation.entity.user.UserEntity;
 import ir.fassih.workshopautomation.repository.GoodsRepository;
@@ -15,10 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -63,6 +61,14 @@ public class GoodsManager extends AbstractManager<GoodsEntity, Long> {
         GoodsEntity entity = find(id);
         orderEntity.setTitle(entity.getTitle());
         orderEntity.setGoods(entity);
+
+        StateOfOrderEntity state = new StateOfOrderEntity();
+        state.setOrder( orderEntity );
+        state.setCreateDate( new Date() );
+        state.setState( entity.getFirstState() );
+
+        orderEntity.putToState( state );
+
         Map<Boolean, List<GoodsRawMaterialEntity>> items =
                 entity.getRawMaterials().stream().collect(Collectors.groupingBy(GoodsRawMaterialEntity::isSelectAble));
 
