@@ -24,7 +24,7 @@ public class UserManager extends AbstractManager<UserEntity, Long> implements Us
 
     @Autowired
     public UserManager(UserRepository repository, BCryptPasswordEncoder encoder) {
-        super(repository);
+        super(repository, UserEntity.class);
         this.encoder = encoder;
     }
 

@@ -12,7 +12,7 @@ public class GoodsCategoryManager extends  AbstractManager<GoodsCategoryEntity, 
 
     @Autowired
     public GoodsCategoryManager(GoodsCategoryRepository repository) {
-        super(repository);
+        super(repository, GoodsCategoryEntity.class);
     }
 
 }

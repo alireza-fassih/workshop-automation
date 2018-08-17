@@ -10,7 +10,7 @@ public class SampleManager extends AbstractManager<SampleEntity,  Long> {
 
 	@Autowired
 	public SampleManager(SampleRepository repository) {
-		super(repository);
+		super(repository, SampleEntity.class);
 		log.info( "WOOOOOOOOOOOOOOOOOOOOOOW" );
 	}
 	

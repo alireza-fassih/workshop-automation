@@ -20,7 +20,7 @@ public class OrderManager extends AbstractManager<OrderEntity, Long> {
 
     @Autowired
     public OrderManager(OrderRepository repository) {
-        super(repository);
+        super(repository, OrderEntity.class);
     }
 
     @Transactional

@@ -1,13 +1,17 @@
 package ir.fassih.workshopautomation.manager;
 
+import ir.fassih.workshopautomation.core.datamanagment.model.OptionsModel;
 import ir.fassih.workshopautomation.core.datamanagment.model.SearchModel;
 import ir.fassih.workshopautomation.core.datamanagment.model.SearchModel.SearchType;
+import ir.fassih.workshopautomation.entity.core.LogicallyDeletable;
 import ir.fassih.workshopautomation.entity.core.Traceable;
 import ir.fassih.workshopautomation.repository.AbstractRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -19,13 +23,21 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 @RequiredArgsConstructor
 public abstract class AbstractManager<T, I extends Serializable> {
 
     protected Logger log = LoggerFactory.getLogger(getClass());
 
+    @Autowired
+    protected ModelMapper modelMapper;
+
+
     protected final AbstractRepository<T, I> repository;
+    protected final Class<T> className;
 
     @Transactional
     public void save(T entity) {
@@ -146,5 +158,23 @@ public abstract class AbstractManager<T, I extends Serializable> {
         }
         return value;
     }
+
+
+    @Transactional(readOnly = true)
+    public List<OptionsModel> loadOptions() {
+        Stream<T> dataSteam = null;
+        if (LogicallyDeletable.class.isAssignableFrom(className)) {
+            dataSteam = loadNotDeletes().stream();
+        } else {
+            dataSteam = StreamSupport.stream(loadAll().spliterator(), false);
+        }
+        return dataSteam
+                .map( this::convertToOtiOptionsModel ).collect(Collectors.toList());
+    }
+
+    private OptionsModel convertToOtiOptionsModel(T entity) {
+        return modelMapper.map(entity, OptionsModel.class);
+    }
+
 
 }

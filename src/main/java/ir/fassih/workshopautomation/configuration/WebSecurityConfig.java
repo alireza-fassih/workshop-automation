@@ -17,8 +17,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/*").permitAll()
-                .antMatchers("/rest/**", "/dashboard/**").hasAuthority("USER")
+                .antMatchers("/rest/**", "/dashboard", "/dashboard/**").hasAuthority("USER")
                 .and()
                 .formLogin().permitAll()
                 .loginPage("/login").loginProcessingUrl("/login").failureUrl("/login")
@@ -27,13 +26,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Autowired
-    public void configGlobal(AuthenticationManagerBuilder builder, UserManager userManager) throws Exception {
-        builder.userDetailsService(userManager).passwordEncoder(passwordEncoder());
+    public void configGlobal(AuthenticationManagerBuilder builder, UserManager userManager,
+                             BCryptPasswordEncoder encoder) throws Exception {
+        builder.userDetailsService(userManager).passwordEncoder(encoder);
     }
 
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 }
 	

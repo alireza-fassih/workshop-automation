@@ -18,7 +18,7 @@ public class RawMaterialManager extends AbstractManager<RawMaterialEntity, Long>
     @Autowired
     public RawMaterialManager(RawMaterialRepository repository,
                               RawMaterialCategoryManager rawMaterialCategoryManager) {
-        super(repository);
+        super(repository, RawMaterialEntity.class);
         this.rawMaterialCategoryManager = rawMaterialCategoryManager;
     }
 

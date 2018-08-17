@@ -19,11 +19,11 @@ public class OrderStateService extends AbstractRestService<OrderStateEntity, Lon
         super(manager);
     }
 
-
     @Override
-    protected Map<String, Object> optionsInternal() {
-        Map<String, Object> map = super.optionsInternal();
-        map.put("states", manager.loadAll());
-        return map;
+    protected Map<Class<? extends AbstractManager>, String> getOptionsMetadata() {
+        Map<Class<? extends AbstractManager>, String> metadata = super.getOptionsMetadata();
+        metadata.put(OrderStateManager.class, "states");
+        return metadata;
     }
+
 }

@@ -11,7 +11,7 @@ public class OrderStateManager extends AbstractManager<OrderStateEntity, Long> {
 
     @Autowired
     public OrderStateManager(OrderStateRepository repository) {
-        super(repository);
+        super(repository, OrderStateEntity.class);
     }
 
 

@@ -13,7 +13,7 @@ public class RawMaterialCategoryManager extends AbstractManager<RawMaterialCateg
 
     @Autowired
     public RawMaterialCategoryManager(RawMaterialCategoryRepository repository) {
-        super(repository);
+        super(repository, RawMaterialCategoryEntity.class);
     }
 
 

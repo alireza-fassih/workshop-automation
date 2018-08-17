@@ -37,7 +37,7 @@ public class GoodsManager extends AbstractManager<GoodsEntity, Long> {
     public GoodsManager(GoodsRepository repository, RawMaterialManager rawMaterialManager,
                         UserManager userManager, OrderManager orderManager,
                         GoodsCategoryManager categoryManager) {
-        super(repository);
+        super(repository, GoodsEntity.class);
         this.rawMaterialManager = rawMaterialManager;
         this.userManager = userManager;
         this.orderManager = orderManager;
