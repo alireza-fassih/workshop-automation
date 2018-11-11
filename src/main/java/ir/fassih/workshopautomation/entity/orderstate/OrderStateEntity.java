@@ -1,6 +1,7 @@
 package ir.fassih.workshopautomation.entity.orderstate;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import ir.fassih.workshopautomation.entity.core.LogicallyDeletable;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -9,7 +10,7 @@ import java.util.Optional;
 @Data
 @Table(name = "DASH_ORDER_STATE")
 @Entity
-public class OrderStateEntity {
+public class OrderStateEntity implements LogicallyDeletable {
 
 
     @Id
@@ -19,6 +20,9 @@ public class OrderStateEntity {
 
     @Column(name = "TITLE")
     private String title;
+
+    @Column(name = "DELETED")
+    private Boolean deleted = Boolean.FALSE;
 
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

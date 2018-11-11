@@ -18,7 +18,6 @@
         </createTable>
     </changeSet>
 
-
     <changeSet author="alireza.fassih" id="add-admin-user">
         <insert tableName="DASH_USER">
             <column name="USER_NAME" value="root"/>
@@ -40,7 +39,6 @@
         </createTable>
     </changeSet>
 
-
     <changeSet id="create-rawMaterial-table" author="alireza-fassih">
         <createTable tableName="DASH_RAW_MATERIAL">
             <column name="ID" type="BIGINT" autoIncrement="true">
@@ -55,6 +53,10 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="change-rawMaterial-dateColumn" author="alireza-fassih">
+        <modifyDataType tableName="DASH_RAW_MATERIAL" columnName="CREATE_DATE" newDataType="TIMESTAMP" />
+        <modifyDataType tableName="DASH_RAW_MATERIAL" columnName="LAST_MODIFICATION_DATE" newDataType="TIMESTAMP" />
+    </changeSet>
 
     <changeSet author="alireza-fassih" id="addMaterial-to-materialCategoryFK">
         <addForeignKeyConstraint baseColumnNames="CATEGORY"
@@ -63,7 +65,6 @@
                                  referencedColumnNames="ID"
                                  referencedTableName="DASH_RAW_MATERIAL_CATEGORY"/>
     </changeSet>
-
 
     <changeSet id="create-goodsCategory-table" author="alireza-fassih">
         <createTable tableName="DASH_GOODS_CATEGORY">
@@ -90,6 +91,11 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="change-goods-dateColumn" author="alireza-fassih">
+        <modifyDataType tableName="DASH_GOODS" columnName="CREATE_DATE" newDataType="TIMESTAMP" />
+        <modifyDataType tableName="DASH_GOODS" columnName="LAST_MODIFICATION_DATE" newDataType="TIMESTAMP" />
+    </changeSet>
+
     <changeSet author="alireza-fassih" id="addGoods-to-goodsCategoryFK">
         <addForeignKeyConstraint baseColumnNames="CATEGORY"
                                  baseTableName="DASH_GOODS"
@@ -97,7 +103,6 @@
                                  referencedColumnNames="ID"
                                  referencedTableName="DASH_GOODS_CATEGORY"/>
     </changeSet>
-
 
     <changeSet id="create-goodsRawMaterial-table" author="alireza-fassih">
         <createTable tableName="DASH_GOODS_RAW_MATERIAL">
@@ -112,6 +117,12 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="add-deleted-toGoodsRawMaterial" author="alireza.fasish">
+        <addColumn tableName="DASH_GOODS_RAW_MATERIAL">
+            <column name="deleted" type="BOOL" />
+        </addColumn>
+    </changeSet>
+
     <changeSet author="alireza-fassih" id="addGoodsRM-to-Goods-FK">
         <addForeignKeyConstraint baseColumnNames="GOODS"
                                  baseTableName="DASH_GOODS_RAW_MATERIAL"
@@ -119,7 +130,6 @@
                                  referencedColumnNames="ID"
                                  referencedTableName="DASH_GOODS"/>
     </changeSet>
-
 
     <changeSet author="alireza-fassih" id="addGoodsRM-to-goodsCategoryFK">
         <addForeignKeyConstraint baseColumnNames="CATEGORY"
@@ -143,7 +153,6 @@
         </addColumn>
     </changeSet>
 
-
     <changeSet id="create-order-table" author="alireza-fassih">
         <createTable tableName="DASH_ORDER">
             <column name="ID" type="BIGINT" autoIncrement="true">
@@ -157,6 +166,10 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="change-order-dateColumn" author="alireza-fassih">
+        <modifyDataType tableName="DASH_ORDER" columnName="CREATE_DATE" newDataType="TIMESTAMP" />
+        <modifyDataType tableName="DASH_ORDER" columnName="LAST_MODIFICATION_DATE" newDataType="TIMESTAMP" />
+    </changeSet>
 
     <changeSet author="alireza-fassih" id="addorder-to-userFK">
         <addForeignKeyConstraint baseColumnNames="CREATOR"
@@ -174,7 +187,6 @@
                                  referencedTableName="DASH_GOODS"/>
     </changeSet>
 
-
     <changeSet id="create-orderItem-table" author="alireza-fassih">
         <createTable tableName="DASH_ORDER_ITEM">
             <column name="ID" type="BIGINT" autoIncrement="true">
@@ -184,7 +196,6 @@
             <column name="RAW_MATERIAL" type="BIGINT"/>
         </createTable>
     </changeSet>
-
 
     <changeSet author="alireza-fassih" id="add_orderItem-to-orderFK">
         <addForeignKeyConstraint baseColumnNames="ORDER_ID"
@@ -216,15 +227,11 @@
                                  referencedTableName="DASH_GOODS_RAW_MATERIAL"/>
     </changeSet>
 
-
     <changeSet id="add-title-column-order-item" author="alireza-fassih">
         <addColumn tableName="DASH_ORDER_ITEM">
             <column name="TITLE" type="VARCHAR(255)"/>
         </addColumn>
     </changeSet>
-
-
-
 
     <changeSet id="add-price-column-order-item" author="alireza-fassih">
         <addColumn tableName="DASH_ORDER_ITEM">
@@ -232,18 +239,15 @@
         </addColumn>
     </changeSet>
 
-
     <changeSet id="drop-price-column-order" author="alireza-fassih">
         <dropColumn tableName="DASH_ORDER" columnName="COST" />
     </changeSet>
-
 
     <changeSet id="add-title-column-order" author="alireza-fassih">
         <addColumn tableName="DASH_ORDER">
             <column name="TITLE" type="VARCHAR(255)"/>
         </addColumn>
     </changeSet>
-
 
     <changeSet id="create-orderState-table" author="alireza-fassih">
         <createTable tableName="DASH_ORDER_STATE">
@@ -255,6 +259,12 @@
             </column>
             <column name="PARENT" type="BIGINT" />
         </createTable>
+    </changeSet>
+
+    <changeSet id="add-deleted-to-orderState" author="alireza-fassih">
+        <addColumn tableName="DASH_ORDER_STATE">
+            <column name="DELETED" type="BOOL" />
+        </addColumn>
     </changeSet>
 
     <changeSet author="alireza-fassih" id="add-orderState-to-orderState-FK">
@@ -270,7 +280,6 @@
               constraintName="fk-goodsRM-goodsCategory" />
     </changeSet>
 
-
     <changeSet author="alireza-fassih" id="addGoodsRM-to-goodsCategory-newFK">
         <addForeignKeyConstraint baseColumnNames="CATEGORY"
                                  baseTableName="DASH_GOODS_RAW_MATERIAL"
@@ -279,14 +288,11 @@
                                  referencedTableName="DASH_RAW_MATERIAL_CATEGORY"/>
     </changeSet>
 
-
     <changeSet id="add-startStateToGoods" author="alireza-fassih">
         <addColumn tableName="DASH_GOODS">
             <column name="FIRST_STATE" type="BIGINT"/>
         </addColumn>
     </changeSet>
-
-
 
     <changeSet author="alireza-fassih" id="addGoodsFirstState-to-OrderStateFK">
         <addForeignKeyConstraint baseColumnNames="FIRST_STATE"
@@ -295,7 +301,6 @@
                                  referencedColumnNames="ID"
                                  referencedTableName="DASH_ORDER_STATE"/>
     </changeSet>
-
 
     <changeSet id="create-orderToState-table" author="alireza-fassih">
         <createTable tableName="DASH_ORDER_TO_STATE">
@@ -311,8 +316,12 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="change-orderToState-dateColumn" author="alireza-fassih">
+        <modifyDataType tableName="DASH_ORDER_TO_STATE" columnName="CREATE_DATE" newDataType="TIMESTAMP" />
+    </changeSet>
+
     <changeSet id="stateofOrder-dropTitle" author="alireza-fassih">
-        <dropColumn tableName="DASH_ORDER_TO_STATE" columnName="ORDER_STATE_TITLE" />
+        <dropColumn tableName="DASH_ORDER_TO_STATE" columnName="ORDER_STATE_TITLE"/>
     </changeSet>
 
     <changeSet id="add-orderStateToStateOfOrder" author="alireza-fassih">
@@ -324,7 +333,6 @@
         </addColumn>
     </changeSet>
 
-
     <changeSet id="add-lastStateIdToOrder" author="alireza-fassih">
         <addColumn tableName="DASH_ORDER">
             <column name="CURRENT_STATE_ID" type="BIGINT">
@@ -334,5 +342,84 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="create-priceList-table" author="alireza-fassih">
+        <createTable tableName="DASH_PRICE_LIST">
+            <column name="ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="CONTENT" type="BLOB" />
+            <column name="CREATE_DATE" type="DATE"/>
+            <column name="LAST_MODIFICATION_DATE" type="DATE"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-notifications-table" author="alireza-fassih">
+        <createTable tableName="DASH_NOTIFICATIONS">
+            <column name="ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="CONTENT" type="TEXT" />
+            <column name="CREATE_DATE" type="DATE"/>
+            <column name="LAST_MODIFICATION_DATE" type="DATE"/>
+            <column name="DELETED" type="BOOL"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="drop-orderitem-order-fk" author="alireza-fassih">
+        <dropForeignKeyConstraint
+                baseTableName="DASH_ORDER_ITEM"
+                constraintName="fk-orderItem-order" />
+    </changeSet>
+
+    <changeSet id="drop-fk-order-goods" author="alireza-fassih">
+        <dropForeignKeyConstraint baseTableName="DASH_ORDER"
+              constraintName="fk-order-goods" />
+    </changeSet>
+
+    <changeSet id="drop-order-id-column" author="alireza-fassih">
+        <dropColumn tableName="DASH_ORDER_ITEM" columnName="ORDER_ID" />
+        <dropColumn tableName="DASH_ORDER" columnName="GOODS" />
+    </changeSet>
+
+    <changeSet id="create-orderGoods-table" author="alireza-fassih">
+        <createTable tableName="DASH_ORDER_GOODS">
+            <column name="ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="ORDER_ID" type="BIGINT">
+                <constraints foreignKeyName="fk-orderGoods-order" referencedTableName="DASH_ORDER" referencedColumnNames="ID" />
+            </column>
+            <column name="ITEM_COUNT" type="BIGINT"/>
+            <column name="GOODS" type="BIGINT">
+                <constraints foreignKeyName="fk-orderGoods-goods" referencedColumnNames="ID" referencedTableName="DASH_GOODS" />
+            </column>
+        </createTable>
+    </changeSet>
+
+
+    <changeSet id="add-orderGoodsCol-orderItem" author="alireza-fassih">
+        <addColumn tableName="DASH_ORDER_ITEM" >
+            <column name="ORDER_GOODS" type="BIGINT">
+                <constraints foreignKeyName="fk-orderItem-orderGoods" referencedColumnNames="ID" referencedTableName="DASH_ORDER_GOODS" />
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="drop-title-from-order" author="alireza-fassih">
+        <dropColumn tableName="DASH_ORDER" columnName="TITLE" />
+    </changeSet>
+
+    <changeSet id="add-prisePercentage-user" author="alireza-fassih">
+        <addColumn tableName="DASH_USER">
+            <column name="PRISE_PERCENT" type="FLOAT"/>
+        </addColumn>
+    </changeSet>
+
+
+    <changeSet id="add-description-on-order" author="alireza-fassih">
+        <addColumn tableName="DASH_ORDER">
+            <column name="DESCRIPTION" type="TEXT" />
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

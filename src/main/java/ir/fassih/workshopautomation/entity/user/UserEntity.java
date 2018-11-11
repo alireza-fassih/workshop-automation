@@ -44,6 +44,8 @@ public class UserEntity implements UserDetails {
     @Convert(converter = UserRolesConverter.class)
     private Set<PortalRole> authorities;
 
+    @Column(name = "PRISE_PERCENT")
+    private Float prisePercentage;
 
     public boolean isAccountNonExpired() {
         return !Optional.ofNullable(info)

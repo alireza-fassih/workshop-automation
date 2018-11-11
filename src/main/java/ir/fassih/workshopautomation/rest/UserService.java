@@ -5,6 +5,7 @@ import ir.fassih.workshopautomation.entity.user.UserEntity;
 import ir.fassih.workshopautomation.manager.UserManager;
 import ir.fassih.workshopautomation.security.PortalRole;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+@Secured("ADMIN")
 @RestController
 @RequestMapping("/rest/user")
 public class UserService  extends  AbstractRestService<UserEntity , Long> {

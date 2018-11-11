@@ -5,11 +5,13 @@ import ir.fassih.workshopautomation.entity.orderstate.OrderStateEntity;
 import ir.fassih.workshopautomation.manager.AbstractManager;
 import ir.fassih.workshopautomation.manager.OrderStateManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
+@Secured("ADMIN")
 @RestController
 @RequestMapping("/rest/orderState")
 public class OrderStateService extends AbstractRestService<OrderStateEntity, Long> {

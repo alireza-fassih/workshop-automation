@@ -6,12 +6,13 @@ import ir.fassih.workshopautomation.manager.GoodsCategoryManager;
 import ir.fassih.workshopautomation.manager.GoodsManager;
 import ir.fassih.workshopautomation.manager.OrderStateManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
-
+@Secured("ADMIN")
 @RestController
 @RequestMapping("/rest/goods")
 public class GoodsService extends AbstractRestService<GoodsEntity, Long> {

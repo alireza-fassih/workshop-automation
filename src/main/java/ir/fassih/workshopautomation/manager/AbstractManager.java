@@ -1,6 +1,6 @@
 package ir.fassih.workshopautomation.manager;
 
-import ir.fassih.workshopautomation.core.datamanagment.model.OptionsModel;
+import ir.fassih.workshopautomation.core.datamanagment.model.OptionsModle;
 import ir.fassih.workshopautomation.core.datamanagment.model.SearchModel;
 import ir.fassih.workshopautomation.core.datamanagment.model.SearchModel.SearchType;
 import ir.fassih.workshopautomation.entity.core.LogicallyDeletable;
@@ -46,6 +46,7 @@ public abstract class AbstractManager<T, I extends Serializable> {
             if (traceable.getCreateDate() == null) {
                 traceable.setCreateDate(new Date());
             }
+            traceable.setLastModificationDate( new Date() );
         }
         repository.save(entity);
     }
@@ -57,9 +58,15 @@ public abstract class AbstractManager<T, I extends Serializable> {
 
     @Transactional
     public void delete(I id) {
-        repository.delete(id);
+        T entity = repository.findOne(id);
+        if (entity instanceof LogicallyDeletable) {
+            LogicallyDeletable logicallyDeletable = (LogicallyDeletable) entity;
+            logicallyDeletable.setDeleted(Boolean.TRUE);
+            save(entity);
+        } else {
+            repository.delete(id);
+        }
     }
-
 
     @Transactional(readOnly = true)
     public Iterable<T> loadAll() {
@@ -134,10 +141,30 @@ public abstract class AbstractManager<T, I extends Serializable> {
             if (searchType == SearchType.EQ) {
                 predicates.add(builder.equal(element, realVal));
             } else if (searchType == SearchType.LIKE) {
-                builder.like(root.get(field), realVal.toString());
+                predicates.add(builder.like(root.get(field), "%"+realVal.toString()+"%"));
+            } else if ( searchType == SearchType.LE ) {
+                if (realVal instanceof Comparable) {
+                    Comparable val = (Comparable) realVal;
+                    predicates.add(builder.lessThanOrEqualTo(root.get(field), val));
+                } else {
+                    log.warn("{} is not comparable ignore le opration", realVal.getClass());
+                }
+            } else if( searchType == SearchType.GE ) {
+                if (realVal instanceof Comparable) {
+                    Comparable val = (Comparable) realVal;
+                    predicates.add(builder.greaterThanOrEqualTo(root.get(field), val));
+                } else {
+                    log.warn("{} is not comparable ignore ge opration", realVal.getClass());
+                }
             }
         });
         return builder.and(predicates.toArray(new Predicate[]{}));
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<T> findAll(SearchModel model) {
+        return repository.findAll(createSpecification(model));
     }
 
     @Transactional(readOnly = true)
@@ -161,7 +188,7 @@ public abstract class AbstractManager<T, I extends Serializable> {
 
 
     @Transactional(readOnly = true)
-    public List<OptionsModel> loadOptions() {
+    public List<OptionsModle> loadOptions() {
         Stream<T> dataSteam = null;
         if (LogicallyDeletable.class.isAssignableFrom(className)) {
             dataSteam = loadNotDeletes().stream();
@@ -169,12 +196,21 @@ public abstract class AbstractManager<T, I extends Serializable> {
             dataSteam = StreamSupport.stream(loadAll().spliterator(), false);
         }
         return dataSteam
-                .map( this::convertToOtiOptionsModel ).collect(Collectors.toList());
+                .map(this::convertToOptionsModle).collect(Collectors.toList());
     }
 
-    private OptionsModel convertToOtiOptionsModel(T entity) {
-        return modelMapper.map(entity, OptionsModel.class);
+    protected OptionsModle convertToOptionsModle(T entity) {
+        return modelMapper.map(entity, OptionsModle.class);
     }
 
 
+    @Transactional
+    public void restore(I id) {
+        T entity = repository.findOne(id);
+        if (entity instanceof LogicallyDeletable) {
+            LogicallyDeletable logicallyDeletable = (LogicallyDeletable) entity;
+            logicallyDeletable.setDeleted(Boolean.FALSE);
+            save(entity);
+        }
+    }
 }

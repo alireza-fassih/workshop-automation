@@ -19,8 +19,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/rest/**", "/dashboard", "/dashboard/**").hasAuthority("USER")
                 .and()
+                .logout().logoutUrl("/logout").logoutSuccessUrl("/login")
+                .and()
                 .formLogin().permitAll()
-                .loginPage("/login").loginProcessingUrl("/login").failureUrl("/login")
+                .loginPage("/login").loginProcessingUrl("/login")
+                .failureUrl("/login")
                 .defaultSuccessUrl("/dashboard")
                 .usernameParameter("username").passwordParameter("password");
     }

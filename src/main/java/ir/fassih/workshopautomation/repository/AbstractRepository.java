@@ -7,7 +7,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
 @NoRepositoryBean
-public interface AbstractRepository<T , I extends Serializable > extends 
-	CrudRepository<T, I>, JpaSpecificationExecutor< T >{
+public interface AbstractRepository<T, I extends Serializable> extends CrudRepository<T, I>, JpaSpecificationExecutor<T> {
 
 }

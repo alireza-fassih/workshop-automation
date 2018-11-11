@@ -9,16 +9,20 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Slf4j
 @RequiredArgsConstructor
-public abstract class AbstractRestService<T, I extends Serializable> implements RestUtils, ApplicationContextAware {
+public abstract class AbstractRestService<T, I extends Serializable>
+        implements RestUtils, ApplicationContextAware, ExcelGenerator {
 
     protected final AbstractManager<T, I> manager;
     private ApplicationContext applicationContext;
@@ -30,7 +34,7 @@ public abstract class AbstractRestService<T, I extends Serializable> implements 
 
 
     @DeleteMapping(path = "/{id}")
-    public void delete(@PathParam("id") I id) {
+    public void delete(@PathVariable("id") I id) {
         manager.delete(id);
     }
 
@@ -40,16 +44,38 @@ public abstract class AbstractRestService<T, I extends Serializable> implements 
         return manager.find(id);
     }
 
+
     @PutMapping("/{id}")
     public void update(@PathVariable("id") I id, @RequestBody T entity) {
         manager.update(id, entity);
     }
 
 
+    @PostMapping("/restore/{id}")
+    public void restore(@PathVariable("id") I id) {
+        manager.restore(id);
+    }
+
     @GetMapping("/search")
     public Page<T> search(@RequestParam Map<String, String> params) {
         return manager.search(createSearchModel(params));
     }
+
+    @GetMapping("/reportExcelReport")
+    public void makeExcelReport(@RequestParam Map<String, String> params, HttpServletResponse response) throws IOException {
+        List<List<String>> entities = manager.findAll(createSearchModel(params)).stream().map(this::convertToRaw)
+                .collect(Collectors.toList());
+        generateExcelFile(getEntityName(), entities, response);
+    }
+
+    protected String getEntityName() {
+        return "";
+    }
+
+    protected List<String> convertToRaw(T entity) {
+        return new ArrayList<>();
+    }
+
 
     @GetMapping("/options")
     public Map<String, Object> options() {

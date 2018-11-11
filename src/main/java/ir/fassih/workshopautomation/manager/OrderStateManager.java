@@ -22,7 +22,9 @@ public class OrderStateManager extends AbstractManager<OrderStateEntity, Long> {
 
     @Transactional(readOnly = true)
     public OrderStateEntity nextOf(OrderStateEntity entity) {
-        return repository.findOne((root, query, cb) -> cb.equal( root.get("parent"), entity.getId()));
+        return repository.findOne((root, query, cb) ->
+            cb.and( cb.equal( root.get("parent"), entity.getId() ),
+                cb.or(cb.notEqual(root.get("deleted"), Boolean.TRUE), cb.isNull(root.get("deleted")) ) ) );
     }
 
 }

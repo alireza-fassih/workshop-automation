@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.Getter;
 
 import javax.persistence.*;
+import java.util.Optional;
 
 @Data
 @Table(name = "DASH_ORDER_ITEM")
@@ -24,8 +25,8 @@ public class OrderItemEntity {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "ORDER_ID")
-    private OrderEntity order;
+    @JoinColumn(name = "ORDER_GOODS")
+    private OrderGoodsEntity order;
 
     @ManyToOne
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -42,5 +43,19 @@ public class OrderItemEntity {
 
     @Column(name = "PRICE")
     private Long price;
+
+
+    @Transient
+    public Boolean isSelectable() {
+        return Optional.ofNullable( metadata )
+            .map(GoodsRawMaterialEntity::isSelectAble).orElse(null);
+    }
+
+    @Transient
+    public String getRawMaterialTitle() {
+        return Optional.ofNullable( material )
+            .map( RawMaterialEntity::getTitle ).orElse( null );
+    }
+
 
 }

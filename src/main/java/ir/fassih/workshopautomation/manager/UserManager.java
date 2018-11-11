@@ -1,8 +1,11 @@
 package ir.fassih.workshopautomation.manager;
 
+import ir.fassih.workshopautomation.core.datamanagment.model.OptionsModle;
 import ir.fassih.workshopautomation.entity.user.UserEntity;
 import ir.fassih.workshopautomation.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -44,6 +47,12 @@ public class UserManager extends AbstractManager<UserEntity, Long> implements Us
         return user;
     }
 
+    @Transactional(readOnly = true)
+    public UserEntity loadCurrentUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return loadByUsername(auth.getName());
+    }
+
     @Override
     @Transactional
     public void save(UserEntity entity) {
@@ -60,6 +69,11 @@ public class UserManager extends AbstractManager<UserEntity, Long> implements Us
         userInfo.setEnabled( enable );
         user.setInfo( userInfo );
         repository.save(user);
+    }
+
+    @Override
+    protected OptionsModle convertToOptionsModle(UserEntity entity) {
+        return new OptionsModle(entity.getId(), entity.getUsername());
     }
 
     @Override

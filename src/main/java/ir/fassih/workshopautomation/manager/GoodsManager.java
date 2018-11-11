@@ -4,12 +4,15 @@ import ir.fassih.workshopautomation.entity.goods.GoodsEntity;
 import ir.fassih.workshopautomation.entity.goodscategory.GoodsCategoryEntity;
 import ir.fassih.workshopautomation.entity.goodsrawmaterial.GoodsRawMaterialEntity;
 import ir.fassih.workshopautomation.entity.order.OrderEntity;
+import ir.fassih.workshopautomation.entity.order.OrderGoodsEntity;
 import ir.fassih.workshopautomation.entity.order.OrderItemEntity;
 import ir.fassih.workshopautomation.entity.order.StateOfOrderEntity;
+import ir.fassih.workshopautomation.entity.orderstate.OrderStateEntity;
 import ir.fassih.workshopautomation.entity.rawmaterial.RawMaterialEntity;
 import ir.fassih.workshopautomation.entity.user.UserEntity;
 import ir.fassih.workshopautomation.repository.GoodsRepository;
 import lombok.Data;
+import org.hibernate.loader.plan.build.internal.FetchGraphLoadPlanBuildingStrategy;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +35,9 @@ public class GoodsManager extends AbstractManager<GoodsEntity, Long> {
     private OrderManager orderManager;
     private GoodsCategoryManager categoryManager;
 
+    @Autowired
+    private OrderStateManager stateManager;
+
 
     @Autowired
     public GoodsManager(GoodsRepository repository, RawMaterialManager rawMaterialManager,
@@ -45,32 +51,50 @@ public class GoodsManager extends AbstractManager<GoodsEntity, Long> {
     }
 
     @Transactional
-    public void submitOrder(Long id, List<OrderItemEntity> orders, Principal principal) {
-        OrderEntity orderEntity = calculatePrice(id, orders);
+    public void submitOrder(OrderDto order, Principal principal) {
+        OrderEntity entity = new OrderEntity();
+
+        entity.setDescription(order.getDescription());
+        StateOfOrderEntity state = new StateOfOrderEntity();
+        state.setOrder(entity);
+        state.setCreateDate(new Date());
+        state.setState(stateManager.loadFirstStates().iterator().next());
+        entity.putToState(state);
+
+        List<OrderGoodsEntity> collect = order.getItems().stream()
+                .map(item -> this.calculatePriceInternal(item.getGoods().getId(), item.getCount(), item.getItems()))
+                .collect(Collectors.toList());
+        collect.forEach( item -> item.setOrder(entity));
+        entity.setItems(collect);
         if (principal != null) {
             UserEntity userEntity = userManager.loadByUsername(principal.getName());
-            orderEntity.setCreator(userEntity);
+            entity.setCreator(userEntity);
         }
-        orderManager.save(orderEntity);
+        orderManager.save(entity);
     }
 
+
     @Transactional(readOnly = true)
-    public OrderEntity calculatePrice(Long id, List<OrderItemEntity> orders) {
-        OrderEntity orderEntity = new OrderEntity();
+    public OrderEntity calculatePrice(OrderDto order) {
+        OrderEntity entity = new OrderEntity();
+        List<OrderGoodsEntity> collect = order.getItems().stream()
+                .map(item -> this.calculatePriceInternal(item.getGoods().getId(), item.getCount(), item.getItems()))
+                .collect(Collectors.toList());
+        collect.forEach( item -> item.setOrder(entity));
+        entity.setItems(collect);
+        return entity;
+    }
+
+    private OrderGoodsEntity calculatePriceInternal(Long id, Long count, Collection<OrderItemEntity> orders) {
+        UserEntity currentUser = userManager.loadCurrentUser();
+        OrderGoodsEntity orderEntity = new OrderGoodsEntity();
+        orderEntity.setCount(count);
         List<OrderItemEntity> orderItems = new ArrayList<>();
         GoodsEntity entity = find(id);
-        orderEntity.setTitle(entity.getTitle());
         orderEntity.setGoods(entity);
-
-        StateOfOrderEntity state = new StateOfOrderEntity();
-        state.setOrder( orderEntity );
-        state.setCreateDate( new Date() );
-        state.setState( entity.getFirstState() );
-
-        orderEntity.putToState( state );
-
         Map<Boolean, List<GoodsRawMaterialEntity>> items =
-                entity.getRawMaterials().stream().collect(Collectors.groupingBy(GoodsRawMaterialEntity::isSelectAble));
+                entity.getRawMaterials().stream().filter(e -> !Boolean.TRUE.equals(e.getDeleted()))
+                        .collect(Collectors.groupingBy(GoodsRawMaterialEntity::isSelectAble));
 
         Function<GoodsRawMaterialEntity, OrderItemEntity> convertor = en -> {
             OrderItemEntity item = new OrderItemEntity();
@@ -78,7 +102,7 @@ public class GoodsManager extends AbstractManager<GoodsEntity, Long> {
             item.setOrder(orderEntity);
             item.setMetadata(en);
             item.setMaterial(en.getMaterial());
-            item.setPrice(Float.valueOf(en.getImportFactor() * en.getMaterial().getUnitPrice()).longValue());
+            item.setPrice(this.calculatePriseBasedOnUser(en.getImportFactor(), en.getMaterial().getUnitPrice(), currentUser));
             return item;
         };
         orderItems.addAll(Optional.ofNullable(items.get(Boolean.FALSE)).orElse(new ArrayList<>())
@@ -103,34 +127,35 @@ public class GoodsManager extends AbstractManager<GoodsEntity, Long> {
                 throw new IllegalStateException();
             }
             OrderItemEntity item = new OrderItemEntity();
-            item.setTitle(goodsRawMaterialEntity.getTitle() + ":( " + rawMaterialEntity.getTitle() + " )");
+            item.setTitle(goodsRawMaterialEntity.getTitle());
             item.setOrder(orderEntity);
             item.setMetadata(goodsRawMaterialEntity);
             item.setMaterial(rawMaterialEntity);
-            item.setPrice(Float.valueOf(goodsRawMaterialEntity.getImportFactor() * rawMaterialEntity.getUnitPrice()).longValue());
+            item.setPrice(this.calculatePriseBasedOnUser(goodsRawMaterialEntity.getImportFactor(), rawMaterialEntity.getUnitPrice() , currentUser));
             orderItems.add(item);
         }
         orderEntity.setItems(orderItems);
         return orderEntity;
     }
 
-    @Transactional(readOnly = true)
-    public List<GoodsCategoryEntity> loadAllCategories() {
-        return categoryManager.loadNotDeletes();
+    private long calculatePriseBasedOnUser(float importFactor, long price, UserEntity user) {
+        Float prisePercentage = Optional.ofNullable(user.getPrisePercentage()).orElse(Float.valueOf(1F));
+        return Float.valueOf((importFactor * price) * prisePercentage).longValue();
     }
-
 
     @Transactional(readOnly = true)
     public ProductMetadata loadMetadataForCreateOrder(Long id) {
         GoodsEntity product = repository.findOne(id);
         ProductMetadata productMetadata = mapper.map(product, ProductMetadata.class);
-        productMetadata.setMetadata(product.getRawMaterials().stream().filter(GoodsRawMaterialEntity::isSelectAble)
-            .map(gr -> mapper.map(gr, MaterialMetadata.class)).collect(Collectors.toList()));
+        productMetadata.setMetadata(product.getRawMaterials().stream()
+                .filter(e -> !Boolean.TRUE.equals(e.getDeleted()))
+                .filter(GoodsRawMaterialEntity::isSelectAble)
+                .map(gr -> mapper.map(gr, MaterialMetadata.class)).collect(Collectors.toList()));
         for (MaterialMetadata m : productMetadata.getMetadata()) {
             m.setValues(
-                rawMaterialManager.findByCategory(m.getCategoryId())
-                    .stream().map(r -> mapper.map(r, MaterialValue.class))
-                    .collect(Collectors.toList()));
+                    rawMaterialManager.findByCategory(m.getCategoryId())
+                            .stream().map(r -> mapper.map(r, MaterialValue.class))
+                            .collect(Collectors.toList()));
         }
         return productMetadata;
     }
@@ -153,5 +178,12 @@ public class GoodsManager extends AbstractManager<GoodsEntity, Long> {
     public static class MaterialValue {
         private Long id;
         private String title;
+    }
+
+
+    @Data
+    public static class OrderDto {
+        private List<OrderGoodsEntity> items;
+        private String description;
     }
 }

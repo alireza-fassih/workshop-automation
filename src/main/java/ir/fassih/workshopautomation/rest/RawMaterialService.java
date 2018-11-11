@@ -5,11 +5,13 @@ import ir.fassih.workshopautomation.manager.AbstractManager;
 import ir.fassih.workshopautomation.manager.RawMaterialCategoryManager;
 import ir.fassih.workshopautomation.manager.RawMaterialManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
+@Secured("ADMIN")
 @RestController
 @RequestMapping("/rest/rawMaterial")
 public class RawMaterialService extends AbstractRestService<RawMaterialEntity, Long> {
@@ -31,10 +33,4 @@ public class RawMaterialService extends AbstractRestService<RawMaterialEntity, L
         return metadata;
     }
 
-//    @Override
-//    protected Map<String, Object> optionsInternal() {
-//        Map<String, Object> objects = super.optionsInternal();
-//        objects.put("categories", getMyManager().loadAllCategories());
-//        return objects;
-//    }
 }
