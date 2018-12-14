@@ -139,7 +139,11 @@ public abstract class AbstractManager<T, I extends Serializable> {
             Object realVal = convertValue(element.getJavaType(), value);
 
             if (searchType == SearchType.EQ) {
-                predicates.add(builder.equal(element, realVal));
+                if(Boolean.class.isAssignableFrom(element.getJavaType()) && Boolean.FALSE.equals(realVal) ) {
+                    predicates.add(builder.or(builder.equal(element, realVal), builder.isNull(element)));
+                } else {
+                    predicates.add(builder.equal(element, realVal));
+                }
             } else if (searchType == SearchType.LIKE) {
                 predicates.add(builder.like(root.get(field), "%"+realVal.toString()+"%"));
             } else if ( searchType == SearchType.LE ) {
