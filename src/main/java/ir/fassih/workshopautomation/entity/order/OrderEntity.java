@@ -66,6 +66,17 @@ public class OrderEntity implements Traceable {
     private OrderStateEntity currentState;
 
 
+    @Column(name = "DISCOUNT")
+    private Long discount;
+
+    @Transient
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    public Long getTotlaPrice() {
+        return Optional.ofNullable(items).orElseGet(Collections::emptyList)
+            .stream().map(OrderGoodsEntity::calculatePrice)
+            .reduce( 0L, (agg, price) -> agg + price) - Optional.ofNullable(discount).orElse(0L);
+    }
+
     @Transient
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     public String getTitle() {

@@ -7,6 +7,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.OptionalInt;
 
@@ -45,4 +46,9 @@ public class OrderGoodsEntity {
             .map( GoodsEntity::getTitle ).orElse( "" );
     }
 
+    public Long calculatePrice() {
+        return Optional.ofNullable(items).orElseGet(Collections::emptyList)
+            .stream().map(OrderItemEntity::getPrice).reduce(0L, (agg, price) -> agg + price ) *
+                Optional.ofNullable( count ).orElse( 1L );
+    }
 }
