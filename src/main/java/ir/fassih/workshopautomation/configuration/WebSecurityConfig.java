@@ -17,7 +17,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/rest/**", "/dashboard", "/dashboard/**").hasAuthority("USER")
+                .antMatchers("/rest/**", "/dashboard", "/dashboard/**").authenticated()
                 .and()
                 .logout().logoutUrl("/logout").logoutSuccessUrl("/login")
                 .and()

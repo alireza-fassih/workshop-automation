@@ -14,8 +14,8 @@ import java.util.Set;
 public class OrderStateManager extends AbstractManager<OrderStateEntity, Long> {
 
 
-    private final static String REGISTRATION_CODE = "REGISTRATION";
-    private final static String REJECTED_CODE     = "REJECTED";
+    final static String REGISTRATION_CODE = "REGISTRATION";
+    final static String REJECTED_CODE     = "REJECTED";
 
     public final static List<String> EDIT_ABLE_STATES =
         Arrays.asList(REGISTRATION_CODE, REJECTED_CODE);
@@ -44,4 +44,8 @@ public class OrderStateManager extends AbstractManager<OrderStateEntity, Long> {
                 cb.or(cb.notEqual(root.get("deleted"), Boolean.TRUE), cb.isNull(root.get("deleted")) ) ) );
     }
 
+    @Transactional(readOnly = true)
+    public OrderStateEntity loadRejectState() {
+        return getMyRepo().findOneByCode(REJECTED_CODE);
+    }
 }

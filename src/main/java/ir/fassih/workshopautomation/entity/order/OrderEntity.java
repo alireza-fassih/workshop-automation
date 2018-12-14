@@ -49,6 +49,9 @@ public class OrderEntity implements Traceable {
     @Column(name = "DESCRIPTION")
     private String description;
 
+    @Column(name = "EXTRA_DESCRIPTION")
+    private String extraDescription;
+
     @Transient
     public boolean isEditable() {
         Calendar calStart = new GregorianCalendar();

@@ -73,10 +73,7 @@ public class MyOrderService extends AbstractRestService<OrderEntity, Long> {
         return Arrays.asList(
                 entity.getId().toString(),
                 entity.getTitle(),
-                Optional.ofNullable(entity.getItems()).orElse(new ArrayList<>()).stream()
-                        .flatMap( e -> Optional.ofNullable(e.getItems()).orElse(new ArrayList<>()).stream() )
-                        .map(OrderItemEntity::getPrice)
-                        .reduce((o, n) -> o + n).orElse(0L).toString(),
+                Long.toString(entity.getTotlaPrice()),
                 new SimpleDateFormat("yyyy-mm-dd HH:mm:ss").format(entity.getCreateDate())
         );
     }
@@ -90,6 +87,11 @@ public class MyOrderService extends AbstractRestService<OrderEntity, Long> {
         return metadata;
     }
 
+
+    @Override
+    public void update(Long id, OrderEntity entity) {
+        throw new UnsupportedOperationException();
+    }
 
     @Override
     public void save(OrderEntity entity) {

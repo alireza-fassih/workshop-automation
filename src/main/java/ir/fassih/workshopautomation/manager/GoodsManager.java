@@ -1,7 +1,6 @@
 package ir.fassih.workshopautomation.manager;
 
 import ir.fassih.workshopautomation.entity.goods.GoodsEntity;
-import ir.fassih.workshopautomation.entity.goodscategory.GoodsCategoryEntity;
 import ir.fassih.workshopautomation.entity.goodsrawmaterial.GoodsRawMaterialEntity;
 import ir.fassih.workshopautomation.entity.order.OrderEntity;
 import ir.fassih.workshopautomation.entity.order.OrderGoodsEntity;
@@ -13,7 +12,6 @@ import ir.fassih.workshopautomation.entity.user.UserEntity;
 import ir.fassih.workshopautomation.repository.GoodsRepository;
 import ir.fassih.workshopautomation.repository.OrderGoodsRepository;
 import lombok.Data;
-import org.hibernate.loader.plan.build.internal.FetchGraphLoadPlanBuildingStrategy;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,16 +52,22 @@ public class GoodsManager extends AbstractManager<GoodsEntity, Long> {
         this.categoryManager = categoryManager;
     }
 
+
+    private void putToRegisterState(OrderEntity orderEntity) {
+        StateOfOrderEntity orderState = new StateOfOrderEntity();
+        orderState.setOrder(orderEntity);
+        orderState.setCreateDate(new Date());
+        orderState.setState(stateManager.loadFirstStates());
+        orderEntity.putToState(orderState);
+    }
+
     @Transactional
     public void submitOrder(OrderDto order, Principal principal) {
         OrderEntity entity = new OrderEntity();
 
         entity.setDescription(order.getDescription());
-        StateOfOrderEntity state = new StateOfOrderEntity();
-        state.setOrder(entity);
-        state.setCreateDate(new Date());
-        state.setState(stateManager.loadFirstStates());
-        entity.putToState(state);
+
+        putToRegisterState(entity);
 
         List<OrderGoodsEntity> collect = order.getItems().stream()
                 .map(item -> this.calculatePriceInternal(item.getGoods().getId(), item.getCount(), item.getItems()))
@@ -174,6 +178,7 @@ public class GoodsManager extends AbstractManager<GoodsEntity, Long> {
             newItems.forEach( it -> it.setOrder( orderEntity ) );
             orderEntity.setItems(newItems);
             orderEntity.setDescription(dto.getDescription());
+            putToRegisterState(orderEntity);
             orderManager.save(orderEntity);
         }
     }

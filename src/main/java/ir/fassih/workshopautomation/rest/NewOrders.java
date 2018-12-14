@@ -1,8 +1,7 @@
 package ir.fassih.workshopautomation.rest;
 
+
 import ir.fassih.workshopautomation.entity.order.OrderEntity;
-import ir.fassih.workshopautomation.entity.order.OrderGoodsEntity;
-import ir.fassih.workshopautomation.entity.order.OrderItemEntity;
 import ir.fassih.workshopautomation.entity.user.UserEntity;
 import ir.fassih.workshopautomation.manager.*;
 import lombok.Data;
@@ -11,28 +10,31 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
-@Secured("ADMIN")
+@Secured("VERIFIER")
 @RestController
-@RequestMapping("/rest/allOrder")
-public class AllOrderService extends AbstractRestService<OrderEntity, Long> {
+@RequestMapping("/rest/newOrders")
+public class NewOrders  extends AbstractRestService<OrderEntity, Long> {
+
 
     @Data
-    private static class DiscountModel {
+    public static class VerifyModel {
         private Long id;
-        private Long discount;
+        private String description;
+    }
+
+    @Autowired
+    public NewOrders(OrderManager manager) {
+        super(manager);
     }
 
 
     private OrderManager getMyManager() {
         return (OrderManager) manager;
-    }
-
-    @Autowired
-    public AllOrderService(OrderManager manager) {
-        super(manager);
     }
 
     @PostMapping("/{id}/nextState")
@@ -49,10 +51,18 @@ public class AllOrderService extends AbstractRestService<OrderEntity, Long> {
         return metadata;
     }
 
-    @PostMapping("/discount")
-    public void discount(@RequestBody DiscountModel model) {
-        getMyManager().discount(model.getId(), model.getDiscount());
+
+    @PostMapping("/accept")
+    public void accept(@RequestBody VerifyModel model) {
+        getMyManager().accept(model.getId(), model.getDescription());
     }
+
+
+    @PostMapping("/reject")
+    public void reject(@RequestBody VerifyModel model) {
+        getMyManager().reject(model.getId(), model.getDescription());
+    }
+
 
     @Override
     protected String getEntityName() {
@@ -85,6 +95,5 @@ public class AllOrderService extends AbstractRestService<OrderEntity, Long> {
     public void save(OrderEntity entity) {
         throw new UnsupportedOperationException();
     }
-
 
 }
