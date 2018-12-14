@@ -58,7 +58,7 @@ public class GoodsManager extends AbstractManager<GoodsEntity, Long> {
         StateOfOrderEntity state = new StateOfOrderEntity();
         state.setOrder(entity);
         state.setCreateDate(new Date());
-        state.setState(stateManager.loadFirstStates().iterator().next());
+        state.setState(stateManager.loadFirstStates());
         entity.putToState(state);
 
         List<OrderGoodsEntity> collect = order.getItems().stream()

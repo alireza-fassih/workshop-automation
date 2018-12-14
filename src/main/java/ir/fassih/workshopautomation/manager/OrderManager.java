@@ -40,15 +40,21 @@ public class OrderManager extends AbstractManager<OrderEntity, Long> {
         OrderEntity orderEntity = find(id);
         OrderStateEntity currentState = orderEntity.getCurrentState();
         if (currentState != null) {
-            OrderStateEntity nextState = orderStateManager.nextOf(currentState);
-            StateOfOrderEntity state = new StateOfOrderEntity();
-            state.setOrder( orderEntity );
-            state.setCreateDate( new Date() );
-            state.setState( nextState );
-            orderEntity.putToState( state );
+            putToState(orderStateManager.nextOf(currentState), orderEntity);
         }
     }
 
+
+    private void putToState(OrderStateEntity state, OrderEntity entity) {
+        if( state != null && entity != null ) {
+            StateOfOrderEntity orderState = new StateOfOrderEntity();
+            orderState.setOrder( entity );
+            orderState.setCreateDate( new Date() );
+            orderState.setState( state );
+            entity.putToState( orderState );
+            repository.save( entity );
+        }
+    }
 
 
     @Transactional

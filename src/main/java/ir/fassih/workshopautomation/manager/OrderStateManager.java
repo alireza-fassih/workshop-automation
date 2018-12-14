@@ -9,15 +9,26 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class OrderStateManager extends AbstractManager<OrderStateEntity, Long> {
 
+
+    private final static String REGISTRATION_CODE = "REGISTRATION";
+    private final static String REJECTED_CODE     = "REJECTED";
+
+
+
     @Autowired
     public OrderStateManager(OrderStateRepository repository) {
         super(repository, OrderStateEntity.class);
     }
 
 
+    private OrderStateRepository getMyRepo() {
+        return (OrderStateRepository) repository;
+    }
+
+
     @Transactional(readOnly = true)
-    public Iterable<OrderStateEntity> loadFirstStates() {
-        return repository.findAll(( root, q, cb) -> cb.isNull( root.get("parent") ));
+    public OrderStateEntity loadFirstStates() {
+        return getMyRepo().findOneByCode(REGISTRATION_CODE);
     }
 
     @Transactional(readOnly = true)

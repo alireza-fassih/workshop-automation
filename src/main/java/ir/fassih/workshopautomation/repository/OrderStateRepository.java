@@ -6,4 +6,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Repository
 public interface OrderStateRepository extends AbstractRepository<OrderStateEntity, Long> {
+
+    OrderStateEntity findOneByCode(String code);
+
 }
