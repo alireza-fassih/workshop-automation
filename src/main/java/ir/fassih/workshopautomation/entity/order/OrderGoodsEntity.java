@@ -46,6 +46,13 @@ public class OrderGoodsEntity {
             .map( GoodsEntity::getTitle ).orElse( "" );
     }
 
+    @Transient
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    public Long getGoodId() {
+        return Optional.ofNullable( goods )
+            .map( GoodsEntity::getId ).orElse( null );
+    }
+
     public Long calculatePrice() {
         return Optional.ofNullable(items).orElseGet(Collections::emptyList)
             .stream().map(OrderItemEntity::getPrice).reduce(0L, (agg, price) -> agg + price ) *

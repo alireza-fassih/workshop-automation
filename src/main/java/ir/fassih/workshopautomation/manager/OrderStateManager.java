@@ -6,6 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+
 @Service
 public class OrderStateManager extends AbstractManager<OrderStateEntity, Long> {
 
@@ -13,6 +17,8 @@ public class OrderStateManager extends AbstractManager<OrderStateEntity, Long> {
     private final static String REGISTRATION_CODE = "REGISTRATION";
     private final static String REJECTED_CODE     = "REJECTED";
 
+    public final static List<String> EDIT_ABLE_STATES =
+        Arrays.asList(REGISTRATION_CODE, REJECTED_CODE);
 
 
     @Autowired

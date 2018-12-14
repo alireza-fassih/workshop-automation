@@ -46,6 +46,20 @@ public class OrderItemEntity {
 
 
     @Transient
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    public Long getMetadataId() {
+        return Optional.ofNullable(metadata)
+            .map(GoodsRawMaterialEntity::getId).orElse(null);
+    }
+
+    @Transient
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    public Long getMaterialId() {
+        return Optional.ofNullable(material)
+            .map(RawMaterialEntity::getId).orElse(null);
+    }
+
+    @Transient
     public Boolean isSelectable() {
         return Optional.ofNullable( metadata )
             .map(GoodsRawMaterialEntity::isSelectAble).orElse(null);

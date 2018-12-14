@@ -7,6 +7,7 @@ import ir.fassih.workshopautomation.entity.goods.GoodsEntity;
 import ir.fassih.workshopautomation.entity.goodsrawmaterial.GoodsRawMaterialEntity;
 import ir.fassih.workshopautomation.entity.orderstate.OrderStateEntity;
 import ir.fassih.workshopautomation.entity.user.UserEntity;
+import ir.fassih.workshopautomation.manager.OrderStateManager;
 import lombok.Data;
 import lombok.Getter;
 
@@ -56,9 +57,9 @@ public class OrderEntity implements Traceable {
         calStart.set(Calendar.MINUTE, 0);
         calStart.set(Calendar.SECOND, 0);
         calStart.set(Calendar.MILLISECOND, 0);
-        OrderStateEntity currentState = getCurrentState();
+        OrderStateEntity state = getCurrentState();
         return calStart.getTime().compareTo(Optional.ofNullable(getCreateDate()).orElse(new Date())) < 1 &&
-                currentState != null && currentState.getParent() == null;
+               state != null && OrderStateManager.EDIT_ABLE_STATES.contains(state.getCode()) ;
     }
 
     @ManyToOne

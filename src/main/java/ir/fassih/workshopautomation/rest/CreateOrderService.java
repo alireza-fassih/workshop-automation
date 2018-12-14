@@ -4,23 +4,26 @@ import ir.fassih.workshopautomation.core.datamanagment.model.SearchModel;
 import ir.fassih.workshopautomation.entity.goods.GoodsEntity;
 import ir.fassih.workshopautomation.entity.goodsrawmaterial.GoodsRawMaterialEntity;
 import ir.fassih.workshopautomation.entity.order.OrderEntity;
+import ir.fassih.workshopautomation.entity.order.OrderGoodsEntity;
 import ir.fassih.workshopautomation.entity.order.OrderItemEntity;
 import ir.fassih.workshopautomation.manager.GoodsCategoryManager;
 import ir.fassih.workshopautomation.manager.GoodsManager;
 import ir.fassih.workshopautomation.manager.OrderManager;
+import ir.fassih.workshopautomation.manager.UserManager;
+import ir.fassih.workshopautomation.repository.OrderGoodsRepository;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.Value;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Secured("USER")
@@ -32,6 +35,10 @@ public class CreateOrderService implements RestUtils {
     private GoodsManager goodsManager;
     private ModelMapper mapper;
     private GoodsCategoryManager categoryManager;
+    private OrderManager orderManager;
+    private UserManager  userManager;
+
+
 
     @GetMapping("/search")
     public Page<GoodsListDto> loadItems(@RequestParam Map<String, String> params) {
@@ -40,6 +47,27 @@ public class CreateOrderService implements RestUtils {
         return goodsManager.search(searchModel).map(source -> mapper.map(source, GoodsListDto.class));
     }
 
+    @PostMapping("/editOrder/{id}")
+    public void editOrder(@PathVariable("id") Long orderId, @RequestBody GoodsManager.OrderDto dto) {
+        goodsManager.editOrder( orderId, dto );
+    }
+
+
+    @GetMapping("/loadOrder/{id}")
+    public LoadOrderDto loadOrder(@PathVariable("id") Long orderId) {
+        OrderEntity orderEntity = orderManager.find(orderId);
+        LoadOrderDto dto = new LoadOrderDto();
+        if(orderEntity != null && orderEntity.isEditable() &&
+            userManager.loadCurrentUser().getId().equals(orderEntity.getCreator().getId())) {
+            dto.setMetadata( Optional.ofNullable(orderEntity.getItems()).orElseGet(Collections::emptyList)
+                .stream().map(OrderGoodsEntity::getGoods).map(GoodsEntity::getId)
+                .distinct()
+                .map(goodsManager::loadMetadataForCreateOrder)
+                .collect(Collectors.toList()) );
+            dto.setOrder( orderEntity );
+        }
+        return dto;
+    }
 
     @GetMapping("/options")
     public Map<String, Object> loadOptions() {
@@ -78,6 +106,12 @@ public class CreateOrderService implements RestUtils {
     public static class CategoryDto {
         private Long id;
         private String title;
+    }
+
+    @Data
+    private static class LoadOrderDto {
+        private List<GoodsManager.ProductMetadata> metadata;
+        private OrderEntity order;
     }
 
 }

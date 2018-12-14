@@ -11,6 +11,7 @@ import ir.fassih.workshopautomation.entity.orderstate.OrderStateEntity;
 import ir.fassih.workshopautomation.entity.rawmaterial.RawMaterialEntity;
 import ir.fassih.workshopautomation.entity.user.UserEntity;
 import ir.fassih.workshopautomation.repository.GoodsRepository;
+import ir.fassih.workshopautomation.repository.OrderGoodsRepository;
 import lombok.Data;
 import org.hibernate.loader.plan.build.internal.FetchGraphLoadPlanBuildingStrategy;
 import org.modelmapper.ModelMapper;
@@ -34,6 +35,9 @@ public class GoodsManager extends AbstractManager<GoodsEntity, Long> {
     private UserManager userManager;
     private OrderManager orderManager;
     private GoodsCategoryManager categoryManager;
+
+    @Autowired
+    private OrderGoodsRepository orderGoodsRepository;
 
     @Autowired
     private OrderStateManager stateManager;
@@ -160,8 +164,23 @@ public class GoodsManager extends AbstractManager<GoodsEntity, Long> {
         return productMetadata;
     }
 
+    @Transactional
+    public void editOrder(Long orderId, OrderDto dto) {
+        OrderEntity orderEntity = orderManager.find(orderId);
+        if(orderEntity != null && orderEntity.isEditable() &&
+                userManager.loadCurrentUser().getId().equals(orderEntity.getCreator().getId())) {
+            orderGoodsRepository.deleteByOrder(orderEntity);
+            Collection<OrderGoodsEntity> newItems = calculatePrice(dto).getItems();
+            newItems.forEach( it -> it.setOrder( orderEntity ) );
+            orderEntity.setItems(newItems);
+            orderEntity.setDescription(dto.getDescription());
+            orderManager.save(orderEntity);
+        }
+    }
+
     @Data
     public static class ProductMetadata {
+        private Long id;
         private String title;
         private List<MaterialMetadata> metadata;
     }
