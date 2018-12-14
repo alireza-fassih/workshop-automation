@@ -150,7 +150,8 @@ export default class CreateOrder extends AbstractFormCreator {
             return <OrderDialog 
                 order={this.state.order} 
                 title="تایید نهایی سفارش" 
-                register={this.save.bind(this)} />;
+                register={this.save.bind(this)} 
+                dismiss={this.dismiss.bind(this)} />;
         }
     }
 

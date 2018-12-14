@@ -5,12 +5,10 @@ import ir.fassih.workshopautomation.entity.order.OrderGoodsEntity;
 import ir.fassih.workshopautomation.entity.order.OrderItemEntity;
 import ir.fassih.workshopautomation.entity.user.UserEntity;
 import ir.fassih.workshopautomation.manager.*;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -20,6 +18,13 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/rest/allOrder")
 public class AllOrderService extends AbstractRestService<OrderEntity, Long> {
+
+    @Data
+    private static class DiscountModel {
+        private Long id;
+        private Long discount;
+    }
+
 
     private OrderManager getMyManager() {
         return (OrderManager) manager;
@@ -44,6 +49,10 @@ public class AllOrderService extends AbstractRestService<OrderEntity, Long> {
         return metadata;
     }
 
+    @PostMapping("/discount")
+    public void discount(@RequestBody DiscountModel model) {
+        getMyManager().discount(model.getId(), model.getDiscount());
+    }
 
     @Override
     protected String getEntityName() {

@@ -72,5 +72,8 @@ public class OrderManager extends AbstractManager<OrderEntity, Long> {
     }
 
 
-
+    @Transactional
+    public void discount(Long id, Long discount) {
+        getMyRepo().setDiscount(id, discount);
+    }
 }
