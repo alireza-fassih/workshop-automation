@@ -277,7 +277,7 @@
 
     <changeSet id="drop-fk-fk-goodsRM-goodsCategory" author="alireza.fassih">
         <dropForeignKeyConstraint baseTableName="DASH_GOODS_RAW_MATERIAL"
-              constraintName="fk-goodsRM-goodsCategory" />
+                                  constraintName="fk-goodsRM-goodsCategory" />
     </changeSet>
 
     <changeSet author="alireza-fassih" id="addGoodsRM-to-goodsCategory-newFK">
@@ -309,7 +309,7 @@
             </column>
             <column name="ORDER_ID" type="BIGINT" >
                 <constraints foreignKeyName="fk-orderToOrderState"
-                     referencedColumnNames="ID" referencedTableName="DASH_ORDER" />
+                             referencedColumnNames="ID" referencedTableName="DASH_ORDER" />
             </column>
             <column name="ORDER_STATE_TITLE" type="VARCHAR(255)" />
             <column name="CREATE_DATE" type="DATETIME"/>
@@ -328,7 +328,7 @@
         <addColumn tableName="DASH_ORDER_TO_STATE">
             <column name="STATE_ID" type="BIGINT">
                 <constraints foreignKeyName="fk-stateOfOrderToState"
-                         referencedTableName="DASH_ORDER_STATE" referencedColumnNames="ID" />
+                             referencedTableName="DASH_ORDER_STATE" referencedColumnNames="ID" />
             </column>
         </addColumn>
     </changeSet>
@@ -373,7 +373,7 @@
 
     <changeSet id="drop-fk-order-goods" author="alireza-fassih">
         <dropForeignKeyConstraint baseTableName="DASH_ORDER"
-              constraintName="fk-order-goods" />
+                                  constraintName="fk-order-goods" />
     </changeSet>
 
     <changeSet id="drop-order-id-column" author="alireza-fassih">
@@ -419,6 +419,49 @@
     <changeSet id="add-description-on-order" author="alireza-fassih">
         <addColumn tableName="DASH_ORDER">
             <column name="DESCRIPTION" type="TEXT" />
+        </addColumn>
+    </changeSet>
+
+    <!-- START NEW CODES -->
+
+    <changeSet id="add-system-state-to-orderState" author="alireza-fassih">
+        <addColumn tableName="DASH_ORDER_STATE">
+            <column name="CODE" type="VARCHAR(255)" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-system-state" author="alireza-fassih">
+        <insert tableName="DASH_ORDER_STATE">
+            <column name="TITLE"   value="ثبت سفارش"/>
+            <column name="CODE"    value="REGISTRATION"/>
+            <column name="DELETED"  valueBoolean="false" />
+        </insert>
+
+        <insert tableName="DASH_ORDER_STATE">
+            <column name="TITLE"   value="تایید سفارش"/>
+            <column name="CODE"    value="ACCEPTED"/>
+            <column name="DELETED" valueBoolean="false"/>
+        </insert>
+
+        <insert tableName="DASH_ORDER_STATE">
+            <column name="TITLE"   value="رد سفارش"/>
+            <column name="CODE"    value="REJECTED"/>
+            <column name="DELETED" valueBoolean="false"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="add-EXTRA_DESCRIPTION-order" author="alireza-fassih">
+        <addColumn tableName="DASH_ORDER">
+            <column name="EXTRA_DESCRIPTION" type="TEXT" />
+        </addColumn>
+    </changeSet>
+
+
+    <changeSet id="add-discount-To-order" author="alireza-fassih">
+        <addColumn tableName="DASH_ORDER">
+            <column name="DISCOUNT" type="BIGINT" >
+                <constraints nullable="true" />
+            </column>
         </addColumn>
     </changeSet>
 
