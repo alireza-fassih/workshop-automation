@@ -23,4 +23,8 @@ public class RawMaterialCategoryEntity implements LogicallyDeletable {
     @Column(name = "DELETED")
     private Boolean deleted = false;
 
+
+    @Column(name = "ALLOW_DISCOUNT")
+    private Boolean allowDiscount;
+
 }

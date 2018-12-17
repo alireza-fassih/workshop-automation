@@ -37,6 +37,8 @@ class CreateEntity extends AbstractFormCreator {
                 return this.createComboBox(12, 8, "edit", item);
             } else if( item.type === "suggest" ) { 
                 return this.createSuggestInput(12, 8, "eidt", item);
+            } else if( item.type === "checkBox" ) {
+                return this.createCheckBox( 2, 2, "edit", item );
             } else {
                 return this.createTextInput( 12, 8, "edit", item );
             }

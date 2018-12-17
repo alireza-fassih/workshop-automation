@@ -465,4 +465,11 @@
         </addColumn>
     </changeSet>
 
+
+    <changeSet id="add-allowDiscount-on-rawcategory" author="alireza.fassih">
+        <addColumn tableName="DASH_RAW_MATERIAL_CATEGORY">
+            <column name="ALLOW_DISCOUNT" type="BOOL" />
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

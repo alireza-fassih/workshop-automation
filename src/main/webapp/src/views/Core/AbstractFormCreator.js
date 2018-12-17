@@ -48,6 +48,7 @@ class AbstractFormCreator extends Component {
         this.createSuggestInput = this.createSuggestInput.bind( this );
         this.refineInternal = this.refineInternal.bind( this );
         this.createComboBox = this.createComboBox.bind( this );
+        this.createCheckBox = this.createCheckBox.bind( this );
     }
 
 
@@ -90,6 +91,20 @@ class AbstractFormCreator extends Component {
                 value={this.state[ item.id ]} 
                 onChange={ val => this.changeValue( item.id, val ) }/> );
         return this.wrapIntoFormGroup( xs, md, htmlId, item.label, element );
+    }
+
+    createCheckBox( xs, md, idPreFix, item ) {
+        let htmlId = idPreFix + "_" + item.id;
+        let element = (
+            <Input type="checkbox" id={htmlId} checked={this.state[ item.id ]}
+                onChange={ val => this.setVal( item.id, val.target.checked ) }/> );
+        return (
+            <FormGroup>
+                <Label htmlFor={htmlId}>
+                    {item.label}{element}
+                </Label>
+            </FormGroup>
+        );
     }
 
     createComboBox( xs, md, idPreFix, item ){
@@ -155,6 +170,7 @@ class AbstractFormCreator extends Component {
         this.setVal(itemId, value);
     }
 
+    
 
     wrapIntoFormGroup(xs, md, itemId, label, element, wrapperClass = "") {
         return(

@@ -24,12 +24,13 @@ class RawMaterialCategory extends AbstractList {
 	}
 
 	getTableHead() {
-		return ["شناسه", "عنوان" , "حذف شده" , ""];
+		return ["شناسه", "عنوان" , "حذف شده" , "محاسبه ضریب", ""];
 	}
 
 	getCreatePanel() {
 		return [
-			{ id: "title", type: 'text', label: 'عنوان' }
+			{ id: "title", type: 'text', label: 'عنوان' },
+			{ id: "allowDiscount", type: "checkBox", label: "محاسبه ضریب"}
 		];
 	}
 
@@ -42,6 +43,10 @@ class RawMaterialCategory extends AbstractList {
 				<td>
 					<i className="fa fa-times" aria-hidden="true" hidden={data.deleted}></i>
 					<i className="fa fa-check" aria-hidden="true" hidden={!data.deleted}></i>
+				</td>
+				<td>
+					<i className="fa fa-times" aria-hidden="true" hidden={data.allowDiscount}></i>
+					<i className="fa fa-check" aria-hidden="true" hidden={!data.allowDiscount}></i>
 				</td>
 				<td>
 					{this.createControleIcons(data)}

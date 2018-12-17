@@ -110,7 +110,7 @@ public class GoodsManager extends AbstractManager<GoodsEntity, Long> {
             item.setOrder(orderEntity);
             item.setMetadata(en);
             item.setMaterial(en.getMaterial());
-            item.setPrice(this.calculatePriseBasedOnUser(en.getImportFactor(), en.getMaterial().getUnitPrice(), currentUser));
+            item.setPrice(this.calculatePriseBasedOnUser(en.getImportFactor(), en.getMaterial(), currentUser));
             return item;
         };
         orderItems.addAll(Optional.ofNullable(items.get(Boolean.FALSE)).orElse(new ArrayList<>())
@@ -139,15 +139,17 @@ public class GoodsManager extends AbstractManager<GoodsEntity, Long> {
             item.setOrder(orderEntity);
             item.setMetadata(goodsRawMaterialEntity);
             item.setMaterial(rawMaterialEntity);
-            item.setPrice(this.calculatePriseBasedOnUser(goodsRawMaterialEntity.getImportFactor(), rawMaterialEntity.getUnitPrice() , currentUser));
+            item.setPrice(this.calculatePriseBasedOnUser(goodsRawMaterialEntity.getImportFactor(), rawMaterialEntity , currentUser));
             orderItems.add(item);
         }
         orderEntity.setItems(orderItems);
         return orderEntity;
     }
 
-    private long calculatePriseBasedOnUser(float importFactor, long price, UserEntity user) {
-        Float prisePercentage = Optional.ofNullable(user.getPrisePercentage()).orElse(Float.valueOf(1F));
+    private long calculatePriseBasedOnUser(float importFactor, RawMaterialEntity rawMaterial, UserEntity user) {
+        Long price = rawMaterial.getUnitPrice();
+        Float prisePercentage = Boolean.TRUE.equals(rawMaterial.getCategory().getAllowDiscount()) ?
+            Optional.ofNullable(user.getPrisePercentage()).orElse(1F) : 1F;
         return Float.valueOf((importFactor * price) * prisePercentage).longValue();
     }
 
