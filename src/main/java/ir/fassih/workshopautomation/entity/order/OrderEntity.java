@@ -84,9 +84,9 @@ public class OrderEntity implements Traceable {
     @Transient
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     public String getTitle() {
-        return String.join(",", Optional.ofNullable(getItems()).orElse(new ArrayList<>()).stream()
+        return Optional.ofNullable(getItems()).orElse(new ArrayList<>()).stream()
                 .map(OrderGoodsEntity::getGoodsTitle)
-                .collect(Collectors.toList()));
+                .collect(Collectors.joining("و"));
     }
 
     public void putToState(StateOfOrderEntity state) {

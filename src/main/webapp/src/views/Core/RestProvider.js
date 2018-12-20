@@ -16,7 +16,7 @@ class RestProvider {
                 let url = window.URL.createObjectURL(new Blob([response.data]));
                 let link = document.createElement('a');
                 link.href = url;
-                link.setAttribute('download', this.prefix + '.xlsx');
+                link.setAttribute('download', this.prefix + '.csv');
                 document.body.appendChild(link);
                 link.click();
             });
