@@ -58,4 +58,17 @@ public class OrderGoodsEntity {
             .stream().map(OrderItemEntity::getPrice).reduce(0L, (agg, price) -> agg + price ) *
                 Optional.ofNullable( count ).orElse( 1L );
     }
+
+    public String createDetails() {
+        StringBuilder builder = new StringBuilder();
+        Long num = Optional.ofNullable(count).orElse(1L);
+        builder.append(num).append(" ").append(getGoodsTitle()).append("[ ");
+        Optional.ofNullable(items).orElseGet(Collections::emptyList)
+            .forEach( i -> {
+                builder.append(i.getMetadata().getTitle() )
+                    .append( ": (" )
+                    .append(i.getRawMaterialTitle()).append(") ");
+            });
+        return builder.append(" ]").toString();
+    }
 }

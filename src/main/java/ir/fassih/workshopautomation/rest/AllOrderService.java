@@ -1,8 +1,7 @@
 package ir.fassih.workshopautomation.rest;
 
+import ir.fassih.workshopautomation.configuration.locale.LocaleUtil;
 import ir.fassih.workshopautomation.entity.order.OrderEntity;
-import ir.fassih.workshopautomation.entity.order.OrderGoodsEntity;
-import ir.fassih.workshopautomation.entity.order.OrderItemEntity;
 import ir.fassih.workshopautomation.entity.user.UserEntity;
 import ir.fassih.workshopautomation.manager.*;
 import lombok.Data;
@@ -11,8 +10,11 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 
 @Secured("ADMIN")
 @RestController
@@ -25,6 +27,8 @@ public class AllOrderService extends AbstractRestService<OrderEntity, Long> {
         private Long discount;
     }
 
+    @Autowired
+    private LocaleUtil localeUtil;
 
     private OrderManager getMyManager() {
         return (OrderManager) manager;
@@ -61,7 +65,7 @@ public class AllOrderService extends AbstractRestService<OrderEntity, Long> {
 
     @Override
     public List<String> getXslHeaders() {
-        return Arrays.asList("شناسه", "سفارش", "قیمت", "تاریخ ثبت", "سفارش دهنده");
+        return Arrays.asList("شناسه", "سفارش", "قیمت", "تاریخ ثبت","سفارش دهنده", localeUtil.getString("order.details"));
     }
 
     @Override
@@ -72,7 +76,8 @@ public class AllOrderService extends AbstractRestService<OrderEntity, Long> {
                 Long.toString(entity.getTotlaPrice()),
                 new SimpleDateFormat("yyyy-mm-dd HH:mm:ss").format(entity.getCreateDate()),
                 Optional.ofNullable(entity.getCreator())
-                        .map(UserEntity::getUsername).orElse("")
+                        .map(UserEntity::getUsername).orElse(""),
+                entity.createDetails()
         );
     }
 

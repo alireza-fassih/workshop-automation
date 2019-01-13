@@ -17,6 +17,7 @@ public interface ExcelGenerator {
 
     default void setHeadersOnRequest(HttpServletResponse response, String fileName) {
         response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+        response.setContentType("text/csv; charset=UTF-8");
     }
 
     default List<String> getXslHeaders() {
@@ -26,6 +27,7 @@ public interface ExcelGenerator {
     default void generateExcelFile(String entityName, List<List<String>> data, HttpServletResponse response) throws IOException {
         setHeadersOnRequest(response, generateExcelFileName(entityName));
         try (PrintWriter p =  new PrintWriter(response.getOutputStream())) {
+            p.print("\uFEFF");
             p.println(String.join(", ", getXslHeaders()));
             for (List<String> row: data){
                 p.println(String.join(", ", row));

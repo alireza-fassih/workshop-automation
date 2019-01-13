@@ -1,5 +1,6 @@
 package ir.fassih.workshopautomation.rest;
 
+import ir.fassih.workshopautomation.configuration.locale.LocaleUtil;
 import ir.fassih.workshopautomation.core.datamanagment.model.SearchModel;
 import ir.fassih.workshopautomation.entity.order.OrderEntity;
 import ir.fassih.workshopautomation.entity.order.OrderGoodsEntity;
@@ -34,6 +35,9 @@ public class MyOrderService extends AbstractRestService<OrderEntity, Long> {
 
 
     @Autowired
+    private LocaleUtil localeUtil;
+
+    @Autowired
     public MyOrderService(OrderManager manager) {
         super(manager);
     }
@@ -45,7 +49,7 @@ public class MyOrderService extends AbstractRestService<OrderEntity, Long> {
 
     @Override
     public List<String> getXslHeaders() {
-        return Arrays.asList("شناسه" , "سفارش", "قیمت", "تاریخ ثبت");
+        return Arrays.asList("شناسه" , "سفارش", "قیمت", "تاریخ ثبت", localeUtil.getString("order.details"));
     }
 
     @Override
@@ -74,7 +78,8 @@ public class MyOrderService extends AbstractRestService<OrderEntity, Long> {
                 entity.getId().toString(),
                 entity.getTitle(),
                 Long.toString(entity.getTotlaPrice()),
-                new SimpleDateFormat("yyyy-mm-dd HH:mm:ss").format(entity.getCreateDate())
+                new SimpleDateFormat("yyyy-mm-dd HH:mm:ss").format(entity.getCreateDate()),
+                entity.createDetails()
         );
     }
 

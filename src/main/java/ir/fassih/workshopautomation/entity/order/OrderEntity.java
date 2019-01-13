@@ -18,6 +18,7 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Data
 @Table(name = "DASH_ORDER")
@@ -89,6 +90,7 @@ public class OrderEntity implements Traceable {
                 .collect(Collectors.joining("و"));
     }
 
+
     public void putToState(StateOfOrderEntity state) {
         if (states == null) {
             states = new ArrayList<>();
@@ -97,4 +99,9 @@ public class OrderEntity implements Traceable {
         setCurrentState(state.getState());
     }
 
+    public String createDetails() {
+        return Optional.ofNullable(items).orElseGet(Collections::emptyList)
+            .stream().map(OrderGoodsEntity::createDetails)
+            .collect(Collectors.joining(" | "));
+    }
 }
