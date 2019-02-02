@@ -47,7 +47,13 @@ export default {
 					icon: 'icon-puzzle',
 					role: "ADMIN"
 				},
-				
+				{
+					name: 'لیست قیمت ها',
+					url: '/price-list/list',
+					icon: 'icon-puzzle',
+					role: "ADMIN"
+				},
+
 			]
 		},
 		{

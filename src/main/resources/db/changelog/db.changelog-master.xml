@@ -472,4 +472,11 @@
         </addColumn>
     </changeSet>
 
+
+    <changeSet id="addTitleToPriceList" author="alireza-fassih">
+       <addColumn tableName="DASH_PRICE_LIST">
+           <column name="TITLE" type="VARCHAR(255)" />
+       </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

@@ -1,6 +1,8 @@
 package ir.fassih.workshopautomation.manager;
 
 import ir.fassih.workshopautomation.entity.goods.GoodsEntity;
+import ir.fassih.workshopautomation.entity.pricelist.PriceListEntity;
+import ir.fassih.workshopautomation.repository.AbstractRepository;
 import ir.fassih.workshopautomation.repository.GoodsRepository;
 import ir.fassih.workshopautomation.repository.PriceListRepository;
 import lombok.AllArgsConstructor;
@@ -12,30 +14,20 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Component
-@AllArgsConstructor(onConstructor = @__(@Autowired))
-public class PriceListManager {
+public class PriceListManager extends AbstractManager<PriceListEntity, Long> {
 
-    private PriceListRepository repository;
-    private GoodsManager goodsManager;
+    @Autowired
+    private UploaderManager uploaderManager;
 
-
-    @Transactional
-    public void calculateList() {
-        goodsManager.loadNotDeletes()
-            .stream().map( this::createAllPossibleState );
-
-
+    @Autowired
+    public PriceListManager(PriceListRepository repository) {
+        super(repository, PriceListEntity.class);
     }
 
 
-    private List<State> createAllPossibleState( GoodsEntity entity ) {
-
-        return null;
-    }
-
-
-    @Value
-    public static class State {
-
+    @Override
+    public void save(PriceListEntity entity) {
+        entity.setContent( uploaderManager.readFile( entity.getContentId() ));
+        super.save(entity);
     }
 }

@@ -90,6 +90,11 @@ const EditOrder = Loadable({
   loading: Loading,
 });
 
+const PriceList = Loadable({
+  loader: () => import('./views/PriceList/PriceList'),
+  loading: Loading,
+});
+
 const routes = [
   { path: '/', exact: true, name: 'خانه', component: DefaultLayout , role: "USER" },
   { path: '/dashboard', name: 'داشبورد', component: Dashboard , role: "USER" },
@@ -107,7 +112,8 @@ const routes = [
   { path: '/unverifier-orders', name: 'سفارشات تایید نشده', component: UnverifierList, role: "VERIFIER"},
   { path: '/all-orders', name: 'لیست تمام درخواست ها', component: AllOrderList, role: "ADMIN"},
   { path: '/orderState', name: 'لیست مراحل', component: OrderStateList, role: "ADMIN"},
-  { path: '/notifications', name: 'لیست اعلامیه ها', component: NotificationList, role: "ADMIN"}
+  { path: '/notifications', name: 'لیست اعلامیه ها', component: NotificationList, role: "ADMIN"},
+  { path: '/price-list/list', name: 'لیست قیمت ها', component: PriceList, role: "ADMIN"}
 ];
 
 export default routes;

@@ -17,8 +17,12 @@ public class PriceListEntity implements Traceable {
     protected Long id;
 
     @Lob
+    @Basic(fetch = FetchType.LAZY)
     @Column(name="CONTENT")
     private byte[] content;
+
+    @Transient
+    private String contentId;
 
     @Column(name = "CREATE_DATE")
     private Date createDate;
@@ -26,5 +30,6 @@ public class PriceListEntity implements Traceable {
     @Column(name = "LAST_MODIFICATION_DATE")
     private Date lastModificationDate;
 
-
+    @Column(name = "TITLE")
+    private String title;
 }

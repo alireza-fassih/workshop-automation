@@ -15,7 +15,7 @@ class CreateEntity extends AbstractFormCreator {
         this.getItems = this.getItems.bind( this );
     }
 
-    save() {   
+    save() {
         this.props.onSave( this.refineProps() );
     }
 
@@ -33,12 +33,14 @@ class CreateEntity extends AbstractFormCreator {
                 return this.createDateInput( 12, 8 , "edit", item );
             } else if( item.type === "multiSelect" ) {
                 return this.createMultiSelect(12, 8, "eidt", item);
-            } else if ( item.type === "combo" ) { 
+            } else if ( item.type === "combo" ) {
                 return this.createComboBox(12, 8, "edit", item);
-            } else if( item.type === "suggest" ) { 
+            } else if( item.type === "suggest" ) {
                 return this.createSuggestInput(12, 8, "eidt", item);
             } else if( item.type === "checkBox" ) {
                 return this.createCheckBox( 2, 2, "edit", item );
+            } else if( item.type === "file" ) {
+              return this.createFile(12, 8, "edit", item);
             } else {
                 return this.createTextInput( 12, 8, "edit", item );
             }

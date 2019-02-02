@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Col, Label, Input, FormGroup } from 'reactstrap';
 import { DatePicker } from 'react-persian-datepicker';
 import Autosuggest from 'react-autosuggest';
+import { FilePond } from 'react-filepond';
+import 'filepond/dist/filepond.min.css';
 
 
 let DATE_PICKER_STYLES = {
@@ -28,11 +30,11 @@ export let fillState = function ( items ) {
 
 class AbstractFormCreator extends Component {
 
-    
+
 
     constructor( props ) {
         super(props);
-       
+
         if( props.items ) {
             this.state = fillState( props.items );
         }
@@ -49,6 +51,7 @@ class AbstractFormCreator extends Component {
         this.refineInternal = this.refineInternal.bind( this );
         this.createComboBox = this.createComboBox.bind( this );
         this.createCheckBox = this.createCheckBox.bind( this );
+        this.createFile = this.createFile.bind( this );
     }
 
 
@@ -76,19 +79,34 @@ class AbstractFormCreator extends Component {
         let htmlId = idPreFix + "_" + item.id;
         let options = item.values.map( it => <option key={htmlId + "_" + it} value={it}>{it}</option> );
         let element = (
-            <Input type="select" multiple value={this.state[ item.id ]} 
+            <Input type="select" multiple value={this.state[ item.id ]}
                 id={htmlId} onChange={ val => this.handleMultiSelectChange( item.id, val ) }>
                 {options}
-            </Input> 
+            </Input>
         );
         return this.wrapIntoFormGroup( xs, md, htmlId, item.label, element );
     }
 
+    createFile( xs, md, idPreFix, item ) {
+      let htmlId = idPreFix + "_" + item.id;
+      let url = "/rest/upload/" + item.uid;
+      let element = (
+        <FilePond
+          server={url}
+          onupdatefiles={fileItems => {
+            fileItems.forEach(it => {
+              console.log( it )
+            })
+          }} />);
+      return this.wrapIntoFormGroup( xs, md, htmlId, item.label, element );
+    }
+
+
     createTextInput( xs, md, idPreFix, item ) {
         let htmlId = idPreFix + "_" + item.id;
         let element = (
-            <Input type={item.type} id={htmlId} 
-                value={this.state[ item.id ]} 
+            <Input type={item.type} id={htmlId}
+                value={this.state[ item.id ]}
                 onChange={ val => this.changeValue( item.id, val ) }/> );
         return this.wrapIntoFormGroup( xs, md, htmlId, item.label, element );
     }
@@ -112,10 +130,10 @@ class AbstractFormCreator extends Component {
         let options = item.values.map( it => <option key={htmlId + "_" + it} value={item.convertToVal(it)}>{item.convertToStr(it)}</option> );
         options.unshift( <option key={htmlId + "_NULL"}></option> );
         let element = (
-            <Input type="select" value={this.state[ item.id ]} 
+            <Input type="select" value={this.state[ item.id ]}
                 id={htmlId} onChange={ val => this.handleComboSelectChange( item.id, val ) }>
                 {options}
-            </Input> 
+            </Input>
         );
         return this.wrapIntoFormGroup( xs, md, htmlId, item.label, element );
     }
@@ -127,7 +145,7 @@ class AbstractFormCreator extends Component {
             value: this.state[ item.id ] ,
             onChange: (e, { newValue }) => this.setVal( item.id , newValue )
         };
-      
+
         let element = (
             <Autosuggest id={htmlId}
                 suggestions={item.values}
@@ -143,7 +161,7 @@ class AbstractFormCreator extends Component {
 
     createDateInput( xs, md, idPreFix, item ) {
         let htmlId = idPreFix + "_" + item.id;
-        let datePicker = ( 
+        let datePicker = (
             <DatePicker calendarStyles={DATE_PICKER_STYLES} id={htmlId}
                 value={this.state[ item.id ]}
                 onChange={ val => this.setVal( item.id, val ) }  />);
@@ -158,7 +176,7 @@ class AbstractFormCreator extends Component {
           }
         }
     }
-    
+
     handleMultiSelectChange( itemId, e ) {
         let options = e.target.options;
         let value = [];
@@ -170,7 +188,7 @@ class AbstractFormCreator extends Component {
         this.setVal(itemId, value);
     }
 
-    
+
 
     wrapIntoFormGroup(xs, md, itemId, label, element, wrapperClass = "") {
         return(
@@ -182,11 +200,11 @@ class AbstractFormCreator extends Component {
             </Col>
         );
     }
-  
+
     changeValue(itemId, event) {
         this.setVal( itemId, event.target.value );
     }
-    
+
     setVal( itemId, val ) {
         let item = {};
         item[ itemId ] = val;

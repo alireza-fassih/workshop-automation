@@ -45,9 +45,6 @@ export default class NewOrdersList extends AbstractList {
 		return ["کد سفارش", "عنوان" , "زمان ایجاد", "وضعیت", "سفارش دهنده", "قیمت", ""];
 	}
 
-	hasXslExport(){
-		return false;
-	}
 
 	createAble() {
         return false;
@@ -60,7 +57,7 @@ export default class NewOrdersList extends AbstractList {
 		this.rest.postCustom("accept", { id: id, description : this.state.extraDescription })
 			.then( resp => this.doSearch() );
 	}
-	
+
 
 	reject() {
 		let id = this.state.shownOrder.id;
@@ -107,7 +104,7 @@ export default class NewOrdersList extends AbstractList {
 						<FormGroup hidden={!isVerified && !this.state.shownOrder.extraDescription}>
 							<Label>توضیحات تایید کننده</Label>
 							{ isVerified && <Input type="textarea" name="extraDescription" id="orderExtraDescription"
-								value={this.state.extraDescription} 
+								value={this.state.extraDescription}
 									onChange={ ev => this.setState({ extraDescription : ev.target.value }) }  /> }
 
 							{ !isVerified && <Input type="textarea" disabled value={this.state.shownOrder.extraDescription} /> }
@@ -151,7 +148,7 @@ export default class NewOrdersList extends AbstractList {
 				<td>{data.creator ? data.creator.username : ""}</td>
 				<td>{data.totlaPrice}</td>
 				<td>
-					<a style={ButtonStyle} href="javascript:void(0);" hidden={data.currentState.code === "REGISTRATION" || data.currentState.code === "REJECTED"} 
+					<a style={ButtonStyle} href="javascript:void(0);" hidden={data.currentState.code === "REGISTRATION" || data.currentState.code === "REJECTED"}
 						onClick={this.gotToNextState.bind(this, data.id)}>
 						<i className="fas fa-angle-double-right" aria-hidden="true"></i>
 					</a>
