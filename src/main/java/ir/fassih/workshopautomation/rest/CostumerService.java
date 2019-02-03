@@ -1,10 +1,14 @@
 package ir.fassih.workshopautomation.rest;
 
+import ir.fassih.workshopautomation.entity.pricelist.PriceListEntity;
+import ir.fassih.workshopautomation.entity.user.UserEntity;
 import ir.fassih.workshopautomation.manager.NotificationManager;
 import ir.fassih.workshopautomation.manager.OrderManager;
 import ir.fassih.workshopautomation.manager.StateOfOrderManager;
+import ir.fassih.workshopautomation.manager.UserManager;
 import lombok.Data;
 import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -15,13 +19,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.*;
 import java.util.stream.Collectors;
 
-
+@Slf4j
 @RestController
 @RequestMapping("/rest/customer")
 public class CostumerService {
@@ -37,6 +42,23 @@ public class CostumerService {
 
     @Autowired
     ModelMapper mapper;
+
+    @Autowired
+    UserManager userManager;
+
+    @GetMapping("/price-list")
+    public void getPriceList(HttpServletResponse response) {
+        UserEntity userEntity = userManager.loadCurrentUser();
+        Optional.ofNullable(userEntity.getPriceList())
+            .map(PriceListEntity::getContent)
+                .ifPresent( bytes -> {
+                    try {
+                        generateFile(bytes, response);
+                    } catch (IOException e) {
+                        log.error("cannot send file To Client" , e);
+                    }
+                });
+    }
 
     @GetMapping("/roles")
     public UserDto getRoles() {
@@ -70,5 +92,19 @@ public class CostumerService {
         private Date createDate;
     }
 
+
+    void setHeadersOnRequest(HttpServletResponse response, String fileName) {
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+        response.setContentType("text/csv; charset=UTF-8");
+    }
+
+
+    void generateFile(byte[] content, HttpServletResponse response) throws IOException {
+        setHeadersOnRequest(response, "priceList.pdf");
+        try (ServletOutputStream p =  response.getOutputStream()) {
+            p.write(content);
+            p.flush();
+        }
+    }
 
 }

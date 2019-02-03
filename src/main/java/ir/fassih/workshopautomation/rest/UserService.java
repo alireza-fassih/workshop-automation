@@ -2,7 +2,7 @@ package ir.fassih.workshopautomation.rest;
 
 
 import ir.fassih.workshopautomation.entity.user.UserEntity;
-import ir.fassih.workshopautomation.manager.UserManager;
+import ir.fassih.workshopautomation.manager.*;
 import ir.fassih.workshopautomation.security.PortalRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -27,6 +27,13 @@ public class UserService  extends  AbstractRestService<UserEntity , Long> {
         super(manager);
     }
 
+
+    @Override
+    protected Map<Class<? extends AbstractManager>, String> getOptionsMetadata() {
+        Map<Class<? extends AbstractManager>, String> metadata = super.getOptionsMetadata();
+        metadata.put(PriceListManager.class, "priceList");
+        return metadata;
+    }
 
     @Override
     public Map<String, Object> optionsInternal() {

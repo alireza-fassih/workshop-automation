@@ -55,13 +55,13 @@ class AbstractList extends Component {
 
     refineComboBox( id , entity ) {
         let  elId = entity[ id ];
-		if( elId ) {
-			entity[id] = {
-				id: elId
-			};
-		} else {
-            entity[id] = undefined;
-		}
+    		if( elId ) {
+    			entity[id] = {
+    				id: elId
+    			};
+    		} else {
+                entity[id] = undefined;
+    		}
     }
 
     componentDidMount() {
@@ -96,7 +96,7 @@ class AbstractList extends Component {
     }
 
     createRestoreIcon(data) {
-        return this.createIcon("fa fa-recycle", this.restoreEntity.bind(this, data.id), !data.deleted); 
+        return this.createIcon("fa fa-recycle", this.restoreEntity.bind(this, data.id), !data.deleted);
     }
 
     createControleIcons( data ) {
@@ -218,7 +218,7 @@ class AbstractList extends Component {
     createCombo( id, lable, options) {
         let value = ( this.state.data && this.state.data[id] ? this.state.data[id].id : undefined );
         return { id: id, type: "combo", label: lable, value: value, values: this.state.options ? this.state.options[options] : [],
-            convertToVal: it => it.id , convertToStr: it => it.title 
+            convertToVal: it => it.id , convertToStr: it => it.title
         };
     }
 

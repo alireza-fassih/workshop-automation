@@ -479,4 +479,22 @@
        </addColumn>
     </changeSet>
 
+
+    <changeSet id="add-PriceListToUser" author="alireza-fassih">
+        <addColumn tableName="DASH_USER">
+            <column name="PRICE_LIST" type="BIGINT">
+                <constraints referencedTableName="DASH_PRICE_LIST"
+                     referencedColumnNames="ID"  foreignKeyName="FL_USER_PRICE_LIST"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+
+    <changeSet id="change-content-type" author="alireza-fassih">
+        <dropColumn tableName="DASH_PRICE_LIST" columnName="CONTENT" />
+        <addColumn tableName="DASH_PRICE_LIST">
+            <column name="CONTENT" type="MEDIUMBLOB"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

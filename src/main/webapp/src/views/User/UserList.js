@@ -29,13 +29,23 @@ class UserList extends AbstractList {
 	}
 
 	getCreatePanel() {
+    let value = ( this.state.data && this.state.data.priceList ? this.state.data.priceList.id : undefined );
 		return [
 			{ id: "username", type: 'text', label: 'نام کاربری' },
 			{ id: "newPassword", type:'password', label: "گذرواژه" },
 			{ id: "prisePercentage", type: "text", label: "ضریب محاسبه قیمت"},
-			{ id: "authorities", type: "multiSelect", values: (this.state.options === undefined ? []: this.state.options.roles) ,label: "نقش" }
+			{ id: "authorities", type: "multiSelect", values: (this.state.options === undefined ? []: this.state.options.roles) ,label: "نقش" },
+      { id: "priceList", type: "combo", label: 'لیست قیمت', value: value, values: this.state.options ? this.state.options.priceList : [],
+				convertToVal: it => it.id , convertToStr: it => it.title }
 		];
 	}
+
+  saveEntity(entity) {
+    console.log(entity);
+		this.refineComboBox( "priceList", entity );
+		super.saveEntity( entity );
+	}
+
 
 	banUser( userId ) {
 		this.rest.postCustom( userId + "/disable" )

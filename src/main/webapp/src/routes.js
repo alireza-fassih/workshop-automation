@@ -95,10 +95,17 @@ const PriceList = Loadable({
   loading: Loading,
 });
 
+const PriceListDownload  = Loadable({
+  loader: () => import('./views/PriceList/PriceListDl'),
+  loading: Loading,
+});
+
+
 const routes = [
   { path: '/', exact: true, name: 'خانه', component: DefaultLayout , role: "USER" },
   { path: '/dashboard', name: 'داشبورد', component: Dashboard , role: "USER" },
   { path: '/logout', name: 'خروج', component: Logout },
+  { path: '/dl-price-list', name: 'لیست قیمت', component: PriceListDownload },
   { path: '/user/list', name: 'لیست کاربران', component: UserList , role: "ADMIN"},
   { path: '/rawMaterialCategory/list', name: 'لیست نوع مواداولیه', component: RawMaterialCategory, role: "ADMIN"},
   { path: '/rawMaterial/list', name: 'لیست مواداولیه', component: RawMaterial, role: "ADMIN"},

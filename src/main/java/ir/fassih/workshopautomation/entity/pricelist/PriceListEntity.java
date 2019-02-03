@@ -1,5 +1,6 @@
 package ir.fassih.workshopautomation.entity.pricelist;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import ir.fassih.workshopautomation.entity.core.Traceable;
 import lombok.Data;
 
@@ -19,6 +20,7 @@ public class PriceListEntity implements Traceable {
     @Lob
     @Basic(fetch = FetchType.LAZY)
     @Column(name="CONTENT")
+    @JsonIgnore
     private byte[] content;
 
     @Transient

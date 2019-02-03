@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import ir.fassih.workshopautomation.core.datamanagment.AbstractEnumConverter;
 import ir.fassih.workshopautomation.core.datamanagment.AbstractJsonConverter;
+import ir.fassih.workshopautomation.entity.pricelist.PriceListEntity;
 import ir.fassih.workshopautomation.security.PortalRole;
 import lombok.Data;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -46,6 +47,12 @@ public class UserEntity implements UserDetails {
 
     @Column(name = "PRISE_PERCENT")
     private Float prisePercentage;
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PRICE_LIST")
+    private PriceListEntity priceList;
+
 
     public boolean isAccountNonExpired() {
         return !Optional.ofNullable(info)

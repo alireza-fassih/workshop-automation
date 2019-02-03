@@ -87,9 +87,14 @@ export default {
 			role: "ADMIN"
 		},
 		{
+			name: 'لیست قیمت',
+			icon: 'icon-puzzle',
+			url: '/dl-price-list'
+		},
+		{
 			name: 'خروج',
 			icon: 'fas fa-sign-out-alt',
 			url: '/logout'
-		},
+		}
 	],
 };
