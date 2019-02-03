@@ -22,6 +22,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
+        <thin.luncher.version>1.0.21.RELEASE</thin.luncher.version>
     </properties>
 
 
@@ -90,6 +91,20 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.springframework.boot.experimental</groupId>
+                        <artifactId>spring-boot-thin-layout</artifactId>
+                        <version>${thin.luncher.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.springframework.boot.experimental</groupId>
+                        <artifactId>spring-boot-thin-launcher</artifactId>
+                        <version>${thin.luncher.version}</version>
+                        <classifier>exec</classifier>
+                    </dependency>
+
+                </dependencies>
             </plugin>
         </plugins>
     </build>
