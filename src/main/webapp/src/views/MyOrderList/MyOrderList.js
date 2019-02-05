@@ -22,7 +22,9 @@ export default class MyOrderList extends AbstractList {
 
 	getSearchPanel() {
 		return [
-			{ id: "LIKE:title", type: 'text', label: 'عنوان' },
+      { id: "EQ:id", type: 'text', label: 'کد سفارش' },
+			{ id: "LIKE:items.goods.title", type: 'text', label: 'عنوان' },
+
 			{ id: "EQ:goods.id", type: 'combo', label: 'کالا',
 				values: this.state.options ? this.state.options.products : [],
 				convertToVal: it => it.id, convertToStr: it => it.title },

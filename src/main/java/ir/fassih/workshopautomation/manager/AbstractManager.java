@@ -7,6 +7,7 @@ import ir.fassih.workshopautomation.entity.core.LogicallyDeletable;
 import ir.fassih.workshopautomation.entity.core.Traceable;
 import ir.fassih.workshopautomation.repository.AbstractRepository;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.jpa.criteria.path.PluralAttributePath;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -127,10 +128,14 @@ public abstract class AbstractManager<T, I extends Serializable> {
                 throw new IllegalStateException();
             }
 
-            Path<Object> element = null;
+            Path<?> element = null;
+
             if (field.contains(".")) {
                 for (String path : field.split("\\.")) {
                     element = (element == null ? root.get(path) : element.get(path));
+                    if(element instanceof PluralAttributePath) {
+                        element = root.join(path);
+                    }
                 }
             } else {
                 element = root.get(field);
@@ -145,7 +150,7 @@ public abstract class AbstractManager<T, I extends Serializable> {
                     predicates.add(builder.equal(element, realVal));
                 }
             } else if (searchType == SearchType.LIKE) {
-                predicates.add(builder.like(root.get(field), "%"+realVal.toString()+"%"));
+                predicates.add(builder.like(( Path<String> )element, "%"+realVal.toString()+"%"));
             } else if ( searchType == SearchType.LE ) {
                 if (realVal instanceof Comparable) {
                     Comparable val = (Comparable) realVal;
