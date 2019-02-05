@@ -38,6 +38,7 @@ export default class OrderState extends AbstractList {
 			{ id: "title", type: 'text', label: 'عنوان' },
 			{ id: "parent", type: "combo", label: 'بعد از', value: value, values: this.state.options ? this.state.options.states : [],
 				convertToVal: it => it.id , convertToStr: it => it.title },
+			{ id: "color", type: 'color', label: 'رنگ' }
 		];
 	}
 

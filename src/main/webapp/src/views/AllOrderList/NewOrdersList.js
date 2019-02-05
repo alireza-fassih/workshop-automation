@@ -139,8 +139,12 @@ export default class NewOrdersList extends AbstractList {
 	}
 
 	convertToTableRow( data ) {
+    let style = {};
+    if(data.currentState && data.currentState.color) {
+      style.backgroundColor = data.currentState.color;
+    }
 		return (
-			<tr key={"item_" + data.id} className={data.currentState.code === "REJECTED" ? "deleted-row" : ""}>
+			<tr key={"item_" + data.id} style={style} className={data.currentState.code === "REJECTED" ? "deleted-row" : ""}>
 				<td>{data.id}</td>
 				<td>{data.title}</td>
 				<td>{moment(data.createDate).locale('fa').format('YYYY/MM/DD')}</td>

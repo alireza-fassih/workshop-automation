@@ -55,7 +55,7 @@ export default class AllOrderList extends AbstractList {
 		this.rest.postCustom(id + "/nextState")
 			.then( resp => this.doSearch() );
 	}
-	
+
 
 	renderCustomElement() {
 		if( this.state.shownOrder ) {
@@ -68,7 +68,7 @@ export default class AllOrderList extends AbstractList {
                     return ( <tr><td>{itemTitle}</td><td>{item.price}</td></tr> )
 				}));
 			})
-			
+
 			tableBody.push(  <tr><th>جمع کل</th><th>{this.state.shownOrder.totlaPrice}</th></tr> );
 
 			return (
@@ -92,7 +92,7 @@ export default class AllOrderList extends AbstractList {
 						</FormGroup>
 						<FormGroup  hidden={!this.state.shownOrder.extraDescription}>
 							<Label>توضیحات تایید کننده</Label>
-							<Input type="textarea" name="extraDescription" id="orderExtraDescription" disabled 
+							<Input type="textarea" name="extraDescription" id="orderExtraDescription" disabled
 								value={this.state.shownOrder.extraDescription} />
 						</FormGroup>
 					</ModalBody>
@@ -113,7 +113,7 @@ export default class AllOrderList extends AbstractList {
 								onChange={ ev => {
 									let o = this.state.discount;
 									o.discount = ev.target.value;
-									this.setState({ discount : o }); 
+									this.setState({ discount : o });
 								}}  />
 						</FormGroup>
 					</ModalBody>
@@ -131,7 +131,7 @@ export default class AllOrderList extends AbstractList {
 		this.rest.postCustom("discount", { id : this.state.discount.id , discount: this.state.discount.discount } )
 			.then( rest => {
 				this.dismissDialog();
-				this.doSearch(); 
+				this.doSearch();
 			});
 
 	}
@@ -149,8 +149,12 @@ export default class AllOrderList extends AbstractList {
 	}
 
 	convertToTableRow( data ) {
+    let style = {};
+    if(data.currentState && data.currentState.color) {
+      style.backgroundColor = data.currentState.color;
+    }
 		return (
-			<tr key={"item_" + data.id} className={data.currentState.code === "REJECTED" ? "deleted-row" : ""}>
+			<tr key={"item_" + data.id} style={style} className={data.currentState.code === "REJECTED" ? "deleted-row" : ""}>
 				<td>{data.id}</td>
 				<td>{data.title}</td>
 				<td>{moment(data.createDate).locale('fa').format('YYYY/MM/DD')}</td>

@@ -497,4 +497,10 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="add-Color-To-DASH_ORDER_STATE" author="alireza.fassih">
+        <addColumn tableName="DASH_ORDER_STATE">
+            <column name="COLOR" type="VARCHAR(20)" />
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

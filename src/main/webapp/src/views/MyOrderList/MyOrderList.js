@@ -57,7 +57,7 @@ export default class MyOrderList extends AbstractList {
                     return ( <tr><td>{itemTitle}</td><td>{item.price}</td></tr> )
 				}));
 			})
-			
+
 			tableBody.push(  <tr><th>جمع کل</th><th>{this.state.shownOrder.totlaPrice}</th></tr> );
 
 			return (
@@ -93,7 +93,7 @@ export default class MyOrderList extends AbstractList {
 				</Modal>);
 		}
 	}
-	
+
 
 	showOrder(order) {
 		this.setState({ shownOrder: order });
@@ -108,8 +108,12 @@ export default class MyOrderList extends AbstractList {
 	}
 
 	convertToTableRow( data ) {
+    let style = {};
+    if(data.currentState && data.currentState.color) {
+      style.backgroundColor = data.currentState.color;
+    }
 		return (
-			<tr key={"item_" + data.id} className={data.currentState.code === "REJECTED" ? "deleted-row" : ""}>
+			<tr key={"item_" + data.id} style={style} className={data.currentState.code === "REJECTED" ? "deleted-row" : ""}>
 				<td>{data.id}</td>
 				<td>{data.title}</td>
 				<td>{moment(data.createDate).locale('fa').format('YYYY/MM/DD')}</td>
@@ -119,7 +123,7 @@ export default class MyOrderList extends AbstractList {
 					{ data.editable && <a style={ButtonStyle} href="javascript:void(0);" onClick={this.deleteEntity.bind(this, data.id)}><i className="fa fa-remove"  aria-hidden="true"></i></a> }
 					{ data.editable && <a style={ButtonStyle} href="javascript:void(0);" onClick={this.editOrder.bind(this, data.id)}><i className="fa fa-pencil"  aria-hidden="true"></i></a> }
 
-					
+
 					<a style={ButtonStyle} href="javascript:void(0);" onClick={this.showOrder.bind(this, data)}>
 						<i className="fa fa-eye" aria-hidden="true"></i>
 					</a>

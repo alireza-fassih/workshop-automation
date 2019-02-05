@@ -35,6 +35,9 @@ public class OrderStateEntity implements LogicallyDeletable {
     private String code;
 
 
+    @Column(name = "COLOR")
+    private String color;
+
     @Transient
     public String getParentTitle() {
         return Optional.ofNullable(parent).map(OrderStateEntity::getTitle)
