@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {  Button, Table, Modal ,ModalHeader, ModalBody, ModalFooter, FormGroup } from 'reactstrap';
 
+import currency from '../../utils/currency';
 
 export default class OrderDialog extends Component {
 
@@ -12,10 +13,10 @@ export default class OrderDialog extends Component {
             tableBody.push(  <tr><th>{order.goodsTitle} {order.count} عدد</th><th></th></tr> );
             tableBody.push( ... order.items.map( item => {
                 let itemTitle = item.title + ( item.selectable ? ": " + item.rawMaterialTitle : "");
-                return ( <tr><td>{itemTitle}</td><td>{item.price}</td></tr> )
+                return ( <tr><td>{itemTitle}</td><td>{currency.format(item.price)}</td></tr> )
             }));
         })
-        tableBody.push(  <tr><th>جمع کل</th><th>{order.totlaPrice}</th></tr> );
+        tableBody.push(  <tr><th>جمع کل</th><th>{currency.format(order.totlaPrice)}</th></tr> );
         return(
             <Modal isOpen={true} size="lg"  >
                 <ModalHeader>{this.props.title}</ModalHeader>

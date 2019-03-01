@@ -5,6 +5,8 @@ import  { Button, Table, Input, Label,
     Modal ,ModalHeader, ModalBody, ModalFooter, FormGroup }  from 'reactstrap';
 
 
+import currency from '../../utils/currency';
+
 const ButtonStyle = {
     marginLeft: "10px"
 }
@@ -152,7 +154,7 @@ export default class NewOrdersList extends AbstractList {
 				<td>{moment(data.createDate).locale('fa').format('YYYY/MM/DD')}</td>
 				<td>{data.currentState ? data.currentState.title : ""}</td>
 				<td>{data.creator ? data.creator.username : ""}</td>
-				<td>{data.totlaPrice}</td>
+				<td>{currency.format( data.totlaPrice )}</td>
 				<td>
 					<a style={ButtonStyle} href="javascript:void(0);" hidden={data.currentState.code === "REGISTRATION" || data.currentState.code === "REJECTED"}
 						onClick={this.gotToNextState.bind(this, data.id)}>

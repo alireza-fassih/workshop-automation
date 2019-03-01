@@ -79,7 +79,7 @@ class RestProvider {
 
 
     checkRedirection(resp) {
-        if (resp.data && typeof resp.data === 'string' && resp.data.length > 5) {
+        if ((resp.status / 100) !== 2 && resp.data && typeof resp.data === 'string' && resp.data.length > 5) {
             window.location.assign("/login")
         } else {
             return resp;

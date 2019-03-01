@@ -4,6 +4,8 @@ import moment from 'jalali-moment'
 import { Button, Table, Input, Label,
     Modal ,ModalHeader, ModalBody, ModalFooter, FormGroup }  from 'reactstrap';
 
+import currency from '../../utils/currency';
+
 const ButtonStyle = {
     marginLeft: "10px"
 }
@@ -120,7 +122,7 @@ export default class MyOrderList extends AbstractList {
 				<td>{data.title}</td>
 				<td>{moment(data.createDate).locale('fa').format('YYYY/MM/DD')}</td>
 				<td>{data.currentState ? data.currentState.title : ""}</td>
-				<td>{data.totlaPrice}</td>
+				<td>{currency.format(data.totlaPrice)}</td>
 				<td>
 					{ data.editable && <a style={ButtonStyle} href="javascript:void(0);" onClick={this.deleteEntity.bind(this, data.id)}><i className="fa fa-remove"  aria-hidden="true"></i></a> }
 					{ data.editable && <a style={ButtonStyle} href="javascript:void(0);" onClick={this.editOrder.bind(this, data.id)}><i className="fa fa-pencil"  aria-hidden="true"></i></a> }
