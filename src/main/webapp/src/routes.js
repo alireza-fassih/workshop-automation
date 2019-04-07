@@ -101,6 +101,12 @@ const PriceListDownload  = Loadable({
 });
 
 
+const OrderStateReport  = Loadable({
+  loader: () => import('./views/Report/OrderStateReport'),
+  loading: Loading,
+});
+
+
 const routes = [
   { path: '/', exact: true, name: 'خانه', component: DefaultLayout , role: "USER" },
   { path: '/dashboard', name: 'داشبورد', component: Dashboard , role: "USER" },
@@ -120,7 +126,10 @@ const routes = [
   { path: '/all-orders', name: 'لیست تمام درخواست ها', component: AllOrderList, role: "ADMIN"},
   { path: '/orderState', name: 'لیست مراحل', component: OrderStateList, role: "ADMIN"},
   { path: '/notifications', name: 'لیست اعلامیه ها', component: NotificationList, role: "ADMIN"},
-  { path: '/price-list/list', name: 'لیست قیمت ها', component: PriceList, role: "ADMIN"}
+  { path: '/price-list/list', name: 'لیست قیمت ها', component: PriceList, role: "ADMIN"},
+  { path: '/report-state', name: 'گزارش براساس مرحله', component: OrderStateReport, role: "ADMIN" },
+
+
 ];
 
 export default routes;

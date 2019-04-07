@@ -155,7 +155,7 @@ public class GoodsManager extends AbstractManager<GoodsEntity, Long> {
 
     @Transactional(readOnly = true)
     public ProductMetadata loadMetadataForCreateOrder(Long id) {
-        GoodsEntity product = repository.findOne(id);
+        GoodsEntity product = find(id);
         ProductMetadata productMetadata = mapper.map(product, ProductMetadata.class);
         productMetadata.setMetadata(product.getRawMaterials().stream()
                 .filter(e -> !Boolean.TRUE.equals(e.getDeleted()))

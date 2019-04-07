@@ -8,6 +8,7 @@ import ir.fassih.workshopautomation.core.datamanagment.AbstractJsonConverter;
 import ir.fassih.workshopautomation.entity.pricelist.PriceListEntity;
 import ir.fassih.workshopautomation.security.PortalRole;
 import lombok.Data;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
@@ -24,7 +25,14 @@ public class UserEntity implements UserDetails {
 
     @Id
     @Column(name = "ID")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(
+            strategy= GenerationType.AUTO,
+            generator="native"
+    )
+    @GenericGenerator(
+            name = "native",
+            strategy = "native"
+    )
     private Long id;
 
     @Column(name = "USER_NAME")

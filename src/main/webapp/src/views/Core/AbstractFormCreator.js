@@ -6,7 +6,7 @@ import { FilePond } from 'react-filepond';
 import 'filepond/dist/filepond.min.css';
 
 
-let DATE_PICKER_STYLES = {
+export const DATE_PICKER_STYLES = {
     "calendarContainer": "calendarContainer",
     "dayPickerContainer" : "dayPickerContainer",
     "monthsList" : "monthsList",

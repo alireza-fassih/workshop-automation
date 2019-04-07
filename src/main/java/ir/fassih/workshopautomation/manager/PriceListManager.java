@@ -33,7 +33,7 @@ public class PriceListManager extends AbstractManager<PriceListEntity, Long> {
     @Override
     @Transactional
     public void update(Long id, PriceListEntity entity) {
-        PriceListEntity db = repository.findOne(id);
+        PriceListEntity db = find(id);
         BeanUtils.copyProperties(entity, db, "content");
         if(StringUtils.hasText(entity.getContentId())) {
             db.setContent( uploaderManager.readFile( entity.getContentId() ));

@@ -92,6 +92,12 @@ export default {
 			url: '/dl-price-list'
 		},
 		{
+			name: 'گزارش براساس مرحله',
+			icon: 'fas fa-chart-bar',
+			url: '/report-state',
+			role: "ADMIN"
+		},
+		{
 			name: 'خروج',
 			icon: 'fas fa-sign-out-alt',
 			url: '/logout'

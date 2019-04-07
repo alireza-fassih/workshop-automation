@@ -70,6 +70,10 @@ a {
   color: black;
 }
 
+.tether-element {
+  z-index: 1050; 
+}
+
 
 .datePicker > div > div > input[type="text"] {
   @extend .form-control;
@@ -78,3 +82,4 @@ a {
 .deleted-row {
   background-color: rgba(210, 21, 21, 0.25) !important;
 }
+

@@ -64,7 +64,7 @@ public class UserManager extends AbstractManager<UserEntity, Long> implements Us
 
     @Transactional
     public void setEnable(Long id, boolean enable) {
-        UserEntity user = repository.findOne(id);
+        UserEntity user = find(id);
         UserEntity.UserInfo userInfo = Optional.ofNullable(user.getInfo()).orElse(new UserEntity.UserInfo());
         userInfo.setEnabled( enable );
         user.setInfo( userInfo );

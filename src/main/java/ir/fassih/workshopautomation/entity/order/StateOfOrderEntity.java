@@ -3,6 +3,7 @@ package ir.fassih.workshopautomation.entity.order;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import ir.fassih.workshopautomation.entity.orderstate.OrderStateEntity;
 import lombok.Data;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -14,7 +15,14 @@ public class StateOfOrderEntity {
 
     @Id
     @Column(name = "ID")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(
+            strategy= GenerationType.AUTO,
+            generator="native"
+    )
+    @GenericGenerator(
+            name = "native",
+            strategy = "native"
+    )
     protected Long id;
 
     @ManyToOne

@@ -3,6 +3,7 @@ package ir.fassih.workshopautomation.entity.notification;
 import ir.fassih.workshopautomation.entity.core.LogicallyDeletable;
 import ir.fassih.workshopautomation.entity.core.Traceable;
 import lombok.Data;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
@@ -16,7 +17,14 @@ public class NotificationEntity implements LogicallyDeletable, Traceable {
 
     @Id
     @Column(name = "ID")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(
+            strategy= GenerationType.AUTO,
+            generator="native"
+    )
+    @GenericGenerator(
+            name = "native",
+            strategy = "native"
+    )
     protected Long id;
 
     @Column(name="CONTENT")

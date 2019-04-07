@@ -7,7 +7,7 @@ import ir.fassih.workshopautomation.entity.core.LogicallyDeletable;
 import ir.fassih.workshopautomation.entity.core.Traceable;
 import ir.fassih.workshopautomation.repository.AbstractRepository;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.jpa.criteria.path.PluralAttributePath;
+import org.hibernate.query.criteria.internal.path.PluralAttributePath;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -54,18 +55,18 @@ public abstract class AbstractManager<T, I extends Serializable> {
 
     @Transactional
     public Iterable<T> saveAll(Iterable<T> entities) {
-        return repository.save(entities);
+        return repository.saveAll(entities);
     }
 
     @Transactional
     public void delete(I id) {
-        T entity = repository.findOne(id);
+        T entity = find(id);
         if (entity instanceof LogicallyDeletable) {
             LogicallyDeletable logicallyDeletable = (LogicallyDeletable) entity;
             logicallyDeletable.setDeleted(Boolean.TRUE);
             save(entity);
         } else {
-            repository.delete(id);
+            repository.deleteById(id);
         }
     }
 
@@ -76,12 +77,13 @@ public abstract class AbstractManager<T, I extends Serializable> {
 
     @Transactional(readOnly = true)
     public T find(I id) {
-        return repository.findOne(id);
+        Optional<T> loaded = repository.findById(id);
+        return loaded.isPresent() ? loaded.get() : null;
     }
 
     @Transactional
     public void update(I id, T entity) {
-        T db = repository.findOne(id);
+        T db =  find(id);
         BeanUtils.copyProperties(entity, db, ignoreFieldWhenUpdate());
         if (db instanceof Traceable) {
             Traceable traceable = (Traceable) db;
@@ -98,13 +100,11 @@ public abstract class AbstractManager<T, I extends Serializable> {
     @Transactional(readOnly = true)
     public Page<T> search(SearchModel model) {
         Specification<T> specification = createSpecification(model);
-        return repository.findAll(specification, new PageRequest(model.getPage(), model.getPageSize(), new Sort(Sort.Direction.DESC, "id")));
+        return repository.findAll(specification, PageRequest.of(model.getPage() - 1, model.getPageSize(), new Sort(Sort.Direction.DESC, "id")));
     }
 
     private Specification<T> createSpecification(SearchModel model) {
-        return (root, query, builder) -> {
-            return createPredicate(root, query, builder, model);
-        };
+        return (root, query, builder) -> createPredicate(root, query, builder, model);
     }
 
     private Predicate createPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder builder,
@@ -215,7 +215,7 @@ public abstract class AbstractManager<T, I extends Serializable> {
 
     @Transactional
     public void restore(I id) {
-        T entity = repository.findOne(id);
+        T entity = find(id);
         if (entity instanceof LogicallyDeletable) {
             LogicallyDeletable logicallyDeletable = (LogicallyDeletable) entity;
             logicallyDeletable.setDeleted(Boolean.FALSE);

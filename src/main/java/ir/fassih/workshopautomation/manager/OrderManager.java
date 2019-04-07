@@ -62,7 +62,7 @@ public class OrderManager extends AbstractManager<OrderEntity, Long> {
 
     @Transactional
     public void delete(Long id) {
-        OrderEntity entity = repository.findOne(id);
+        OrderEntity entity = find(id);
         if( isCurrentUserGrantForDelete() || isOrderCreatorCanDelete(entity) ) {
             repository.delete(entity);
         }

@@ -8,6 +8,7 @@ import ir.fassih.workshopautomation.entity.rawmaterialcategory.RawMaterialCatego
 import lombok.Data;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Optional;
@@ -20,7 +21,14 @@ public class GoodsRawMaterialEntity implements LogicallyDeletable {
 
     @Id
     @Column(name = "ID")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(
+            strategy= GenerationType.AUTO,
+            generator="native"
+    )
+    @GenericGenerator(
+            name = "native",
+            strategy = "native"
+    )
     protected Long id;
 
     @Column(name = "DELETED")

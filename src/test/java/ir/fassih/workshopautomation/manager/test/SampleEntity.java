@@ -2,18 +2,14 @@ package ir.fassih.workshopautomation.manager.test;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
 @Data
 @Table(name="TEST_SAMPLE")
@@ -26,7 +22,14 @@ public class SampleEntity {
 	
 	@Id
 	@Column(name="ID")
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(
+			strategy= GenerationType.AUTO,
+			generator="native"
+	)
+	@GenericGenerator(
+			name = "native",
+			strategy = "native"
+	)
 	private Long id;
 	
 	
@@ -35,8 +38,10 @@ public class SampleEntity {
 	
 	@Column(name="AMOUNT")
 	private Long amount;
-	
+
+	@Builder.Default
 	@Column(name="CREATION_TIME")
-	private Date creationTime;
+	@Temporal(TemporalType.DATE)
+	private Date creationTime = new Date();
 	
 }

@@ -9,6 +9,7 @@ import ir.fassih.workshopautomation.entity.rawmaterial.RawMaterialEntity;
 import ir.fassih.workshopautomation.entity.user.UserEntity;
 import lombok.Data;
 import lombok.Getter;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Optional;
@@ -20,7 +21,14 @@ public class OrderItemEntity {
 
     @Id
     @Column(name = "ID")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(
+            strategy= GenerationType.AUTO,
+            generator="native"
+    )
+    @GenericGenerator(
+            name = "native",
+            strategy = "native"
+    )
     protected Long id;
 
     @ManyToOne
