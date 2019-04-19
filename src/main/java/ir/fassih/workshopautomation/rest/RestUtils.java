@@ -15,7 +15,9 @@ public interface RestUtils {
         param.remove("pageSize");
 
         return SearchModel.builder()
-                .filters(param).page(page).pageSize(pageSize)
+                .filters(param)
+                .page(page)
+                .pageSize(pageSize)
                 .build();
     }
 

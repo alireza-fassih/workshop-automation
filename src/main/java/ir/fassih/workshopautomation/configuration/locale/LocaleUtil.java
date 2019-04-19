@@ -68,4 +68,8 @@ public class LocaleUtil {
                 .orElse(key);
     }
 
+    public String getString(String key , Object ...objects) {
+        return String.format(getString(key), objects);
+    }
+
 }

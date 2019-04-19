@@ -11500,5 +11500,8 @@ a {
 .deleted-row {
   background-color: rgba(210, 21, 21, 0.25) !important; }
 
+.table td {
+  max-width: 200px; }
+
 html body .app.flex-row.align-items-center {
   height: 100vh; }

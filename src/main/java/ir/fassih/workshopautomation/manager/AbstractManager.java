@@ -100,7 +100,7 @@ public abstract class AbstractManager<T, I extends Serializable> {
     @Transactional(readOnly = true)
     public Page<T> search(SearchModel model) {
         Specification<T> specification = createSpecification(model);
-        return repository.findAll(specification, PageRequest.of(model.getPage() - 1, model.getPageSize(), new Sort(Sort.Direction.DESC, "id")));
+        return repository.findAll(specification, PageRequest.of(model.getPage() , model.getPageSize(), new Sort(Sort.Direction.DESC, "id")));
     }
 
     private Specification<T> createSpecification(SearchModel model) {
@@ -110,6 +110,7 @@ public abstract class AbstractManager<T, I extends Serializable> {
     private Predicate createPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder builder,
                                       SearchModel model) {
         List<Predicate> predicates = new ArrayList<>();
+        query.distinct(true);
         model.getFilters().forEach((key, value) -> {
 
             String field = null;

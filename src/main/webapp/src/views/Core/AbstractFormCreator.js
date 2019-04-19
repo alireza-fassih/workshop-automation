@@ -127,7 +127,7 @@ class AbstractFormCreator extends Component {
 
     createComboBox( xs, md, idPreFix, item ){
         let htmlId = idPreFix + "_" + item.id;
-        let options = item.values.map( it => <option key={htmlId + "_" + it} value={item.convertToVal(it)}>{item.convertToStr(it)}</option> );
+        let options = item.values.map( it => <option key={htmlId + "_" + item.convertToVal(it)} value={item.convertToVal(it)}>{item.convertToStr(it)}</option> );
         options.unshift( <option key={htmlId + "_NULL"}></option> );
         let element = (
             <Input type="select" value={this.state[ item.id ]}

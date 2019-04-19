@@ -31,7 +31,7 @@ export default class NewOrdersList extends AbstractList {
       { id: "EQ:id", type: 'text', label: 'کد سفارش' },
       { id: "LIKE:items.goods.title", type: 'text', label: 'عنوان' },
 
-      { id: "EQ:goods.id", type: 'combo', label: 'کالا',
+      { id: "EQ:items.goods.id", type: 'combo', label: 'کالا',
 				values: this.state.options ? this.state.options.products : [],
 				convertToVal: it => it.id, convertToStr: it => it.title },
 			{ id: "EQ:creator.id", type: 'combo', label: 'سفارش دهنده',

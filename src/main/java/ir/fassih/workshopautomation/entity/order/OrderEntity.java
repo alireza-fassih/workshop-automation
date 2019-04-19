@@ -10,6 +10,7 @@ import ir.fassih.workshopautomation.entity.user.UserEntity;
 import ir.fassih.workshopautomation.manager.OrderStateManager;
 import lombok.Data;
 import lombok.Getter;
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -41,6 +42,12 @@ public class OrderEntity implements Traceable {
     @ManyToOne
     @JoinColumn(name = "CREATOR")
     private UserEntity creator;
+
+
+    @Basic
+    @Column(name =  "UNIT")
+    private float unit;
+
 
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "order")

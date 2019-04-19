@@ -42,7 +42,9 @@ public class AbstractManagerTest {
         manager.saveAll(entities);
         Map<String, String> filters = new HashMap<>();
         filters.put("EQ:username", "user 2");
-        SearchModel model = SearchModel.builder().filters(filters).build();
+        SearchModel model = SearchModel.builder()
+            .page(0)
+            .filters(filters).build();
         Page<SampleEntity> search = manager.search(model);
         assertEquals(1, search.getContent().size());
     }
@@ -60,6 +62,7 @@ public class AbstractManagerTest {
         Map<String, String> filters = new HashMap<>();
         filters.put("EQ:creationTime", "1532717069608");
         SearchModel model = SearchModel.builder()
+                .page(0)
                 .filters(filters)
                 .build();
 

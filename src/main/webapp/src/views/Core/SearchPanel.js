@@ -26,11 +26,11 @@ class SearchPanel extends AbstractFormCreator {
     render() {
         let elements = this.props.items.map(item => {
             if (item.type === "date") {
-                return this.createDateInput(12, 3, "search", item);
+                return this.createDateInput(12, 3, "search" , item);
             } else if ( item.type === "combo" ) {
-                return this.createComboBox(12, 3, "search", item );
+                return this.createComboBox(12, 3, "search"  , item );
             } else {
-                return this.createTextInput(12, 3, "search", item);
+                return this.createTextInput(12, 3, "search" , item);
             }
         });
 

@@ -9,6 +9,7 @@ import ir.fassih.workshopautomation.entity.user.UserEntity;
 import ir.fassih.workshopautomation.repository.OrderRepository;
 import ir.fassih.workshopautomation.security.PortalRole;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,8 @@ public class OrderManager extends AbstractManager<OrderEntity, Long> {
     @Autowired
     UserManager userManager;
 
+    @Autowired
+    private JdbcTemplate template;
 
     @Autowired
     public OrderManager(OrderRepository repository) {
@@ -57,6 +60,16 @@ public class OrderManager extends AbstractManager<OrderEntity, Long> {
             entity.putToState( orderState );
             repository.save( entity );
         }
+    }
+
+    @Transactional
+    public int recalculateAllUnits() {
+        String sql = "UPDATE DASH_ORDER SET unit=( " +
+                    "select DASH_ORDER_GOODS.ITEM_COUNT * sum(DASH_GOODS.width) as unit from " +
+                        "DASH_ORDER_GOODS INNER JOIN DASH_GOODS ON DASH_ORDER_GOODS.GOODS = DASH_GOODS.ID " +
+                        "WHERE DASH_ORDER_GOODS.ORDER_ID=DASH_ORDER.ID " +
+                        "GROUP by ORDER_ID )";
+        return template.update(sql);
     }
 
 

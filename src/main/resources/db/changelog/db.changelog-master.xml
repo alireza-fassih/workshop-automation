@@ -503,4 +503,16 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="add-width-to-goods" author="alireza.fassih">
+        <addColumn tableName="DASH_GOODS">
+            <column name="WIDTH" type="FLOAT" defaultValueNumeric="0" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-unit-order" author="alireza.fassih">
+        <addColumn tableName="DASH_ORDER">
+            <column name="UNIT" type="FLOAT" />
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

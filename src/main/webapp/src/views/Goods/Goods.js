@@ -39,7 +39,7 @@ class Goods extends AbstractList {
 			{ id: "title", type: 'text', label: 'عنوان' },
 			{ id: "category", type: "combo", label: 'نوع', value: value, values: this.state.options ? this.state.options.categories : [],
 				convertToVal: it => it.id , convertToStr: it => it.title },
-			this.createCombo("firstState", "مرحله شروع", "states")
+			{ id: "width", type: "text", label: '"دست" تخصیص داده شده'}
 		];
 	}
 

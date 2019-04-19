@@ -1,7 +1,7 @@
 import React from 'react';
 import AbstractList from '../Core/AbstractList'
 import moment from 'jalali-moment'
-import  { Button, Table, Input,Label,
+import  { Button, Table, Input,Label, Alert, Tooltip,
     Modal ,ModalHeader, ModalBody, ModalFooter, FormGroup }  from 'reactstrap';
 
 import currency from '../../utils/currency';
@@ -9,6 +9,11 @@ import currency from '../../utils/currency';
 const ButtonStyle = {
     marginLeft: "10px"
 }
+
+String.prototype.trunc = String.prototype.trunc ||
+	function(n){
+			return (this.length > n) ? this.substr(0, n-1) + ' ...' : this;
+	};
 
 export default class AllOrderList extends AbstractList {
 
@@ -27,7 +32,7 @@ export default class AllOrderList extends AbstractList {
 		return [
       { id: "EQ:id", type: 'text', label: 'کد سفارش' },
 			{ id: "LIKE:items.goods.title", type: 'text', label: 'عنوان' },
-			{ id: "EQ:goods.id", type: 'combo', label: 'کالا',
+			{ id: "EQ:items.goods.id", type: 'combo', label: 'کالا',
 				values: this.state.options ? this.state.options.products : [],
 				convertToVal: it => it.id, convertToStr: it => it.title },
 			{ id: "EQ:currentState.id", type: 'combo', label: 'وضعیت',
@@ -42,7 +47,7 @@ export default class AllOrderList extends AbstractList {
 	}
 
 	getTableHead() {
-		return ["کد سفارش", "عنوان" , "زمان ایجاد", "وضعیت", "سفارش دهنده", "قیمت", ""];
+		return ["کد سفارش", "عنوان" ,"دست", "زمان ایجاد", "وضعیت", "سفارش دهنده", "قیمت", ""];
 	}
 
 	hasXslExport(){
@@ -50,7 +55,7 @@ export default class AllOrderList extends AbstractList {
 	}
 
 	createAble() {
-        return false;
+    return false;
 	}
 
 	gotToNextState(id) {
@@ -126,7 +131,23 @@ export default class AllOrderList extends AbstractList {
 						</FormGroup>
 					</ModalFooter>
 				</Modal>);
+		} else {
+			return (
+				<span>
+					{this.state && this.state.notify && <Alert color="success">{this.state.notify}</Alert>}
+					<Button onClick={this.recalculateUnits.bind(this)}>محاسبه دست ها</Button>
+				</span>
+			);
 		}
+	}
+
+	recalculateUnits() {
+		this.rest.postCustom("recalculate-units")
+			.then(resp => { 
+				this.doSearch(); 
+				this.setState({notify: resp.data.message});
+				setTimeout(() => { this.setState( { notify: null } )}, 2000);
+			});
 	}
 
 	saveDiscount() {
@@ -150,15 +171,27 @@ export default class AllOrderList extends AbstractList {
 		this.setState({ discount : order });
 	}
 
+
+	toggleToolTip(i) {
+		let tool = this.state.toolTips || {};
+		let oldVal = tool[i] || false;
+		tool[i] = !oldVal;
+		this.setState({ toolTips : tool });
+	}
+
+
 	convertToTableRow( data ) {
     let style = {};
     if(data.currentState && data.currentState.color) {
       style.backgroundColor = data.currentState.color;
     }
 		return (
-			<tr key={"item_" + data.id} style={style} className={data.currentState.code === "REJECTED" ? "deleted-row" : ""}>
+			<tr key={"item_" + data.id} style={style} className={data.currentState.code === "REJECTED" ? "deleted-row" : ""}
+					id={"item_row_" + data.id} >
+
 				<td>{data.id}</td>
 				<td>{data.title}</td>
+				<td>{data.unit}</td>
 				<td>{moment(data.createDate).locale('fa').format('YYYY/MM/DD')}</td>
 				<td>{data.currentState ? data.currentState.title : ""}</td>
 				<td>{data.creator ? data.creator.username : ""}</td>

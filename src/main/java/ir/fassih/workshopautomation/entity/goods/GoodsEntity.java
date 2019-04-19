@@ -62,4 +62,10 @@ public class GoodsEntity implements LogicallyDeletable , Traceable {
     @ManyToOne
     @JoinColumn(name = "FIRST_STATE")
     private OrderStateEntity firstState;
+
+
+    @Basic
+    @Column(name = "WIDTH")
+    private float width;
+
 }
