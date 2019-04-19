@@ -1,6 +1,6 @@
 
 cd "$(dirname $0)"
 echo "$(pwd)"
-rm -rf "../resources/static/*"
-cp -r "./build/*" "../resources/static/"
-mv -y "../resources/static/index.html" "../resources/templates/dashboard-view.html"
+rm -rfv "../resources/static"
+cp -rv "./build" "../resources/static"
+mv -fv "../resources/static/index.html" "../resources/templates/dashboard-view.html"
