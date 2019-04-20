@@ -8,8 +8,7 @@ import ir.fassih.workshopautomation.entity.goodsrawmaterial.GoodsRawMaterialEnti
 import ir.fassih.workshopautomation.entity.orderstate.OrderStateEntity;
 import ir.fassih.workshopautomation.entity.user.UserEntity;
 import ir.fassih.workshopautomation.manager.OrderStateManager;
-import lombok.Data;
-import lombok.Getter;
+import lombok.*;
 import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -25,6 +24,9 @@ import java.util.stream.Stream;
 @Data
 @Table(name = "DASH_ORDER")
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class OrderEntity implements Traceable {
 
     @Id
@@ -46,7 +48,7 @@ public class OrderEntity implements Traceable {
 
     @Basic
     @Column(name =  "UNIT")
-    private float unit;
+    private Float unit;
 
 
 

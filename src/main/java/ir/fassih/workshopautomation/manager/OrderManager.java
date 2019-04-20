@@ -14,6 +14,7 @@ import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -41,6 +42,16 @@ public class OrderManager extends AbstractManager<OrderEntity, Long> {
     }
 
 
+    @Override
+    protected void beforeSave(OrderEntity entity) {
+        // calculate unit of order
+        Float unit = Optional.ofNullable(entity.getItems()).orElseGet(Collections::emptyList)
+            .stream().map( item ->
+                item.getCount() * Optional.ofNullable(item.getGoods()).map(GoodsEntity::getWidth).orElse(0.0f) )
+                    .reduce( 0.0F , Float::sum);
+        entity.setUnit( Optional.ofNullable(unit).orElse(0.0f) );
+    }
+
     @Transactional
     public void nextState(Long id) {
         OrderEntity orderEntity = find(id);
@@ -65,10 +76,10 @@ public class OrderManager extends AbstractManager<OrderEntity, Long> {
     @Transactional
     public int recalculateAllUnits() {
         String sql = "UPDATE DASH_ORDER SET unit=( " +
-                    "select DASH_ORDER_GOODS.ITEM_COUNT * sum(DASH_GOODS.width) as unit from " +
-                        "DASH_ORDER_GOODS INNER JOIN DASH_GOODS ON DASH_ORDER_GOODS.GOODS = DASH_GOODS.ID " +
-                        "WHERE DASH_ORDER_GOODS.ORDER_ID=DASH_ORDER.ID " +
-                        "GROUP by ORDER_ID )";
+            "select sum(DASH_ORDER_GOODS.ITEM_COUNT * DASH_GOODS.width) as unit from " +
+                "DASH_ORDER_GOODS INNER JOIN DASH_GOODS ON DASH_ORDER_GOODS.GOODS = DASH_GOODS.ID " +
+                "WHERE DASH_ORDER_GOODS.ORDER_ID=DASH_ORDER.ID " +
+                "GROUP by ORDER_ID )";
         return template.update(sql);
     }
 

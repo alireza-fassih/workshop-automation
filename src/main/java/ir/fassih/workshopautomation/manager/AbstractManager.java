@@ -43,6 +43,7 @@ public abstract class AbstractManager<T, I extends Serializable> {
 
     @Transactional
     public void save(T entity) {
+        beforeSave(entity);
         if (entity instanceof Traceable) {
             Traceable traceable = (Traceable) entity;
             if (traceable.getCreateDate() == null) {
@@ -51,6 +52,10 @@ public abstract class AbstractManager<T, I extends Serializable> {
             traceable.setLastModificationDate( new Date() );
         }
         repository.save(entity);
+    }
+
+    protected  void beforeSave( T entity ) {
+
     }
 
     @Transactional

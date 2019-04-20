@@ -3,7 +3,10 @@ package ir.fassih.workshopautomation.entity.order;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import ir.fassih.workshopautomation.entity.goods.GoodsEntity;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -15,6 +18,9 @@ import java.util.OptionalInt;
 @Data
 @Table(name = "DASH_ORDER_GOODS")
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class OrderGoodsEntity {
 
     @Id

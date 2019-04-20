@@ -6,9 +6,7 @@ import ir.fassih.workshopautomation.entity.core.Traceable;
 import ir.fassih.workshopautomation.entity.goodscategory.GoodsCategoryEntity;
 import ir.fassih.workshopautomation.entity.goodsrawmaterial.GoodsRawMaterialEntity;
 import ir.fassih.workshopautomation.entity.orderstate.OrderStateEntity;
-import lombok.Data;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -20,6 +18,9 @@ import java.util.Set;
 @Table(name = "DASH_GOODS")
 @Entity
 @ToString(exclude = "rawMaterials")
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class GoodsEntity implements LogicallyDeletable , Traceable {
 
 
@@ -66,6 +67,6 @@ public class GoodsEntity implements LogicallyDeletable , Traceable {
 
     @Basic
     @Column(name = "WIDTH")
-    private float width;
+    private Float width;
 
 }
