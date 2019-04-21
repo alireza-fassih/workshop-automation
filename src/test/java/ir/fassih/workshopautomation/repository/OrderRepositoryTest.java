@@ -1,6 +1,5 @@
 package ir.fassih.workshopautomation.repository;
 
-import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import ir.fassih.workshopautomation.entity.goods.GoodsEntity;
 import ir.fassih.workshopautomation.entity.order.OrderEntity;
 import ir.fassih.workshopautomation.entity.order.OrderGoodsEntity;
@@ -13,8 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -82,7 +79,7 @@ public class OrderRepositoryTest {
 
 
         List<CountByTimeModel<Double>> result =
-                repository.reportByTime(parser.parse("2019-10-11 00:00"), parser.parse("2019-10-14 00:00"));
+                repository.reportUnitsByTime(parser.parse("2019-10-11 00:00"), parser.parse("2019-10-14 00:00"));
 
         assertEquals(3, result.size());
 

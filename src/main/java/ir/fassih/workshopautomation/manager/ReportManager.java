@@ -1,8 +1,10 @@
 package ir.fassih.workshopautomation.manager;
 
+import ir.fassih.workshopautomation.repository.OrderRepository;
 import ir.fassih.workshopautomation.repository.StateOfOrderRepository;
 import ir.fassih.workshopautomation.repository.report.CountByTimeModel;
 import ir.fassih.workshopautomation.rest.model.ReportByStateModel;
+import ir.fassih.workshopautomation.rest.model.ReportOrderUnitByTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,9 +17,11 @@ import java.util.List;
 public class ReportManager {
 
     private final StateOfOrderRepository stateOfOrderRepository;
+    private final OrderRepository  orderRepository;
 
 
-    @Transactional
+
+    @Transactional(readOnly = true)
     public List<CountByTimeModel<Long>> generateReportByStateAndUser(ReportByStateModel model) {
         if(model.getUser() != null) {
             return stateOfOrderRepository.reportByStateAndUser(model.getState(), model.getUser(), model.getStartDate(), model.getEndDate());
@@ -26,4 +30,8 @@ public class ReportManager {
         }
     }
 
+    @Transactional(readOnly = true)
+    public List<CountByTimeModel<Double>> unitsByTime(ReportOrderUnitByTime model) {
+        return orderRepository.reportUnitsByTime(model.getStartDate(), model.getEndDate());
+    }
 }

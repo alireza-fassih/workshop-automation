@@ -26,7 +26,7 @@ public interface OrderRepository extends AbstractRepository<OrderEntity, Long> {
             "FROM OrderEntity o " +
             "WHERE o.createDate > ?1 AND o.createDate < ?2 " +
             "GROUP BY YEAR(o.createDate), MONTH(o.createDate), DAY(o.createDate)" )
-    List<CountByTimeModel<Double>> reportByTime(Date start, Date end);
+    List<CountByTimeModel<Double>> reportUnitsByTime(Date start, Date end);
 
 
 }

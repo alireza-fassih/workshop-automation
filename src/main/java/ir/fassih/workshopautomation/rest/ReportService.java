@@ -7,6 +7,7 @@ import ir.fassih.workshopautomation.manager.ReportManager;
 import ir.fassih.workshopautomation.manager.UserManager;
 import ir.fassih.workshopautomation.repository.report.CountByTimeModel;
 import ir.fassih.workshopautomation.rest.model.ReportByStateModel;
+import ir.fassih.workshopautomation.rest.model.ReportOrderUnitByTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,12 @@ public class ReportService implements RestUtils, ApplicationContextAware {
     @PostMapping("/byState")
     public List<CountByTimeModel<Long>> reportByState(@Valid @RequestBody ReportByStateModel model) {
         return reportManager.generateReportByStateAndUser(model);
+    }
+
+
+    @PostMapping("/unit-by-time")
+    public List<CountByTimeModel<Double>> reportUnitByTime(@Valid @RequestBody ReportOrderUnitByTime model) {
+        return reportManager.unitsByTime(model);
     }
 
 

@@ -106,6 +106,10 @@ const OrderStateReport  = Loadable({
   loading: Loading,
 });
 
+const OrderUnitReport  = Loadable({
+  loader: () => import('./views/Report/OrderUnitReport'),
+  loading: Loading,
+});
 
 const routes = [
   { path: '/', exact: true, name: 'خانه', component: DefaultLayout , role: "USER" },
@@ -128,6 +132,7 @@ const routes = [
   { path: '/notifications', name: 'لیست اعلامیه ها', component: NotificationList, role: "ADMIN"},
   { path: '/price-list/list', name: 'لیست قیمت ها', component: PriceList, role: "ADMIN"},
   { path: '/report-state', name: 'گزارش براساس مرحله', component: OrderStateReport, role: "ADMIN" },
+  { path: '/report-unit', name: 'گزارش دست ها', component: OrderUnitReport, role: "ADMIN" },
 
 
 ];

@@ -98,6 +98,12 @@ export default {
 			role: "ADMIN"
 		},
 		{
+			name: 'گزارش دست ها',
+			icon: 'fas fa-chart-bar',
+			url: '/report-unit',
+			role: "ADMIN"
+		},
+		{
 			name: 'خروج',
 			icon: 'fas fa-sign-out-alt',
 			url: '/logout'
