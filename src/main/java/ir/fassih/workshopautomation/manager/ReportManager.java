@@ -18,7 +18,7 @@ public class ReportManager {
 
 
     @Transactional
-    public List<CountByTimeModel> generateReportByStateAndUser(ReportByStateModel model) {
+    public List<CountByTimeModel<Long>> generateReportByStateAndUser(ReportByStateModel model) {
         if(model.getUser() != null) {
             return stateOfOrderRepository.reportByStateAndUser(model.getState(), model.getUser(), model.getStartDate(), model.getEndDate());
         } else {

@@ -45,7 +45,7 @@ public class ReportService implements RestUtils, ApplicationContextAware {
 
 
     @PostMapping("/byState")
-    public List<CountByTimeModel> reportByState(@Valid @RequestBody ReportByStateModel model) {
+    public List<CountByTimeModel<Long>> reportByState(@Valid @RequestBody ReportByStateModel model) {
         return reportManager.generateReportByStateAndUser(model);
     }
 

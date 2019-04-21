@@ -124,13 +124,13 @@ public class StateOfOrderRepositoryTest {
         repo.save( createState(parser.parse("2016-10-15 11:22"), os, orderEntity2) );
 
 
-        List<CountByTimeModel> result =
+        List<CountByTimeModel<Long>> result =
                 repo.reportByStateAndUser(os.getId(), u.getId(), parser.parse("2016-10-11 00:00"), parser.parse("2016-10-15 00:00"));
 
 
         assertEquals(4, result.size());
 
-        for (CountByTimeModel r : result ) {
+        for (CountByTimeModel<Long> r : result ) {
             Date groupedDate = r.getGroupedDate();
             if( groupedDate.equals( parser.parse("2016-10-11 00:00") ) ) {
                 assertEquals(1, r.getCount().longValue());
@@ -183,13 +183,13 @@ public class StateOfOrderRepositoryTest {
         repo.save( createState(parser.parse("2016-10-15 11:22"), os) );
 
 
-        List<CountByTimeModel> result =
+        List<CountByTimeModel<Long>> result =
             repo.reportByState(os.getId(), parser.parse("2016-10-11 00:00"), parser.parse("2016-10-15 00:00"));
 
 
         assertEquals(4, result.size());
 
-        for (CountByTimeModel r : result ) {
+        for (CountByTimeModel<Long> r : result ) {
             Date groupedDate = r.getGroupedDate();
             if( groupedDate.equals( parser.parse("2016-10-11 00:00") ) ) {
                 assertEquals(1, r.getCount().longValue());
@@ -206,7 +206,7 @@ public class StateOfOrderRepositoryTest {
 
 
 
-        List<CountByTimeModel> result2 =
+        List<CountByTimeModel<Long>> result2 =
                 repo.reportByState(55, parser.parse("2016-10-11 00:00"), parser.parse("2016-10-15 00:00"));
 
 

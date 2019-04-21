@@ -49,7 +49,9 @@ export default class FormGenerator extends Component {
                     onChange={this.props.onChange}
                     onSubmit={this.props.onSubmit}
                     onError={this.props.onError} 
+                    formData={this.props.formData}
                     ref={(form) => this.formRef = form}>
+                    
 
                     <div>
                         <Button {...this.props.submitBtn}>{this.props.submitBtn.title}</Button>

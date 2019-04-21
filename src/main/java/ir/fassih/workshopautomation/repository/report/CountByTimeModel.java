@@ -7,7 +7,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public interface CountByTimeModel {
+public interface CountByTimeModel<T> {
 
     SimpleDateFormat PARSER = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -21,7 +21,7 @@ public interface CountByTimeModel {
     int getD();
 
 
-    Long getCount();
+    T getCount();
 
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")

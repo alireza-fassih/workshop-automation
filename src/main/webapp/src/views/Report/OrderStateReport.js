@@ -95,7 +95,14 @@ ColWithCard.defaultProps = {
 };
 
 function validate(formData, errors) {
-    if (formData.startDate._d.getTime() >= formData.endDate._d.getTime()) {
+    let hasError = false;
+    ["startDate", "endDate"].forEach( elem => {
+        if( formData[ elem ] === undefined ) {
+            errors[ elem ].addError("پر کردن این قسمت اجباری است");
+            hasError = true;
+        }
+    });
+    if (!hasError && formData.startDate._d.getTime() >= formData.endDate._d.getTime()) {
         errors.addError("شروع بازه باید کوچکتر از انتهای بازه باشد");
     }
     return errors;
@@ -147,7 +154,6 @@ export default class OrderStateReport extends Component {
                     dataSet.data.push(item.count);
                 });
                 temporal.datasets.push(dataSet);
-                console.log(  temporal )
                 this.setState({ line: temporal });
             });
     }
@@ -156,7 +162,7 @@ export default class OrderStateReport extends Component {
         return (
             <div className="animated fadeIn">  
                 <Row>
-                    <ColWithCard sm="12" md="5">
+                    <ColWithCard sm="12" md="4">
                         { this.state && this.state.schema  && <FormGenerator
                             validate={validate}
                             schema={this.state.schema}
@@ -165,7 +171,7 @@ export default class OrderStateReport extends Component {
                             onSubmit={this.onSubmit.bind(this)}/>}
                     </ColWithCard>
                     { this.state && this.state.line &&
-                    <ColWithCard sm="12" md="6">
+                    <ColWithCard sm="12" md="7">
                         <div className="chart-wrapper">
                             <Line data={this.state.line} options={options} /> 
                         </div>

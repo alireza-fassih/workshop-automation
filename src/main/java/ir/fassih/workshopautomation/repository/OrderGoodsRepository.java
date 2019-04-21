@@ -10,4 +10,5 @@ public interface OrderGoodsRepository  extends  AbstractRepository<OrderGoodsEnt
 
     void deleteByOrder(OrderEntity orderEntity);
 
+
 }
