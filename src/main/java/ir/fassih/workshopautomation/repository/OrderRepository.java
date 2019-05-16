@@ -29,4 +29,5 @@ public interface OrderRepository extends AbstractRepository<OrderEntity, Long> {
     List<CountByTimeModel<Double>> reportUnitsByTime(Date start, Date end);
 
 
+
 }
