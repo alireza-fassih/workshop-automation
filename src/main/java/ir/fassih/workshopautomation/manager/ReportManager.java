@@ -1,7 +1,7 @@
 package ir.fassih.workshopautomation.manager;
 
-import ir.fassih.workshopautomation.repository.OrderRepository;
 import ir.fassih.workshopautomation.repository.StateOfOrderRepository;
+import ir.fassih.workshopautomation.repository.report.AbstractReportModel;
 import ir.fassih.workshopautomation.repository.report.CountByTimeModel;
 import ir.fassih.workshopautomation.rest.model.ReportByStateModel;
 import ir.fassih.workshopautomation.rest.model.ReportOrderUnitByTime;
@@ -17,7 +17,7 @@ import java.util.List;
 public class ReportManager {
 
     private final StateOfOrderRepository stateOfOrderRepository;
-    private final OrderRepository  orderRepository;
+    private final OrderManager orderManager;
 
 
 
@@ -31,7 +31,7 @@ public class ReportManager {
     }
 
     @Transactional(readOnly = true)
-    public List<CountByTimeModel<Double>> unitsByTime(ReportOrderUnitByTime model) {
-        return orderRepository.reportUnitsByTime(model.getStartDate(), model.getEndDate());
+    public List<AbstractReportModel.DoubleReportModel> unitsByTime(ReportOrderUnitByTime model) {
+        return orderManager.report(model);
     }
 }

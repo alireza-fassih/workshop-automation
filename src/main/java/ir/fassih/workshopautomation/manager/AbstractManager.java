@@ -1,11 +1,13 @@
 package ir.fassih.workshopautomation.manager;
 
+import com.fasterxml.jackson.databind.util.StdDateFormat;
 import ir.fassih.workshopautomation.core.datamanagment.model.OptionsModle;
 import ir.fassih.workshopautomation.core.datamanagment.model.SearchModel;
 import ir.fassih.workshopautomation.core.datamanagment.model.SearchModel.SearchType;
 import ir.fassih.workshopautomation.entity.core.LogicallyDeletable;
 import ir.fassih.workshopautomation.entity.core.Traceable;
 import ir.fassih.workshopautomation.repository.AbstractRepository;
+import ir.fassih.workshopautomation.rest.model.AbstractReportParam;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.query.criteria.internal.path.PluralAttributePath;
 import org.modelmapper.ModelMapper;
@@ -19,12 +21,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.text.ParseException;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -36,6 +37,9 @@ public abstract class AbstractManager<T, I extends Serializable> {
 
     @Autowired
     protected ModelMapper modelMapper;
+
+    @Autowired
+    private EntityManager entityManager;
 
 
     protected final AbstractRepository<T, I> repository;
@@ -109,14 +113,15 @@ public abstract class AbstractManager<T, I extends Serializable> {
     }
 
     private Specification<T> createSpecification(SearchModel model) {
-        return (root, query, builder) -> createPredicate(root, query, builder, model);
+        return (root, query, builder) -> {
+            query.distinct(true);
+            return createPredicate(root, builder, model.getFilters());
+        };
     }
 
-    private Predicate createPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder builder,
-                                      SearchModel model) {
+    private Predicate createPredicate(Root<T> root, CriteriaBuilder builder, Map<String, String> filters) {
         List<Predicate> predicates = new ArrayList<>();
-        query.distinct(true);
-        model.getFilters().forEach((key, value) -> {
+        filters.forEach((key, value) -> {
 
             String field = null;
             SearchType searchType = null;
@@ -131,7 +136,8 @@ public abstract class AbstractManager<T, I extends Serializable> {
             }
 
             if (searchType == null) {
-                throw new IllegalStateException();
+                log.debug("ignore unknown search param {}", key);
+                return;
             }
 
             Path<?> element = null;
@@ -192,7 +198,11 @@ public abstract class AbstractManager<T, I extends Serializable> {
 
     private Object convertValue(Class<?> javaType, String value) {
         if (Date.class.isAssignableFrom(javaType)) {
-            return new Date(Long.parseLong(value));
+            try {
+                return new StdDateFormat().parse( value );
+            } catch (ParseException e) {
+                return new Date(Long.parseLong(value));
+            }
         } else if (Long.class.isAssignableFrom(javaType)) {
             return Long.parseLong(value);
         } else if (Boolean.class.isAssignableFrom(javaType)) {
@@ -228,4 +238,16 @@ public abstract class AbstractManager<T, I extends Serializable> {
             save(entity);
         }
     }
+
+    @Transactional(readOnly = true)
+    public <C> List<C> report(AbstractReportParam<C, T> param) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<C> query = cb.createQuery(param.getConstructType());
+        Root< T > root = query.from( className );
+        query.select( param.createConstructor( cb , root) )
+            .where( createPredicate( root, cb, param.getFilters() ) )
+            .groupBy( param.createGroupedBy( cb , root ) );
+        return entityManager.createQuery(query).getResultList();
+    }
+
 }

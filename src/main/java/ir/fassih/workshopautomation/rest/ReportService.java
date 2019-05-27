@@ -5,6 +5,7 @@ import ir.fassih.workshopautomation.manager.AbstractManager;
 import ir.fassih.workshopautomation.manager.OrderStateManager;
 import ir.fassih.workshopautomation.manager.ReportManager;
 import ir.fassih.workshopautomation.manager.UserManager;
+import ir.fassih.workshopautomation.repository.report.AbstractReportModel;
 import ir.fassih.workshopautomation.repository.report.CountByTimeModel;
 import ir.fassih.workshopautomation.rest.model.ReportByStateModel;
 import ir.fassih.workshopautomation.rest.model.ReportOrderUnitByTime;
@@ -52,7 +53,7 @@ public class ReportService implements RestUtils, ApplicationContextAware {
 
 
     @PostMapping("/unit-by-time")
-    public List<CountByTimeModel<Double>> reportUnitByTime(@Valid @RequestBody ReportOrderUnitByTime model) {
+    public List<AbstractReportModel.DoubleReportModel> reportUnitByTime(@Valid @RequestBody ReportOrderUnitByTime model) {
         return reportManager.unitsByTime(model);
     }
 

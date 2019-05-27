@@ -1,30 +1,62 @@
 package ir.fassih.workshopautomation.rest.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import ir.fassih.workshopautomation.entity.order.OrderEntity;
+import ir.fassih.workshopautomation.repository.report.AbstractReportModel.DoubleReportModel;
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
-import java.util.Date;
-import java.util.Map;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Selection;
 
 @Data
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class ReportOrderUnitByTime {
+public class ReportOrderUnitByTime extends AbstractReportParam<DoubleReportModel, OrderEntity>{
 
+    private static final String DATE_FIELD = "createDate";
 
     public enum DateRange {
         DAY, MONTH
     }
 
-    @NotNull
-    private Date startDate;
+    public ReportOrderUnitByTime() {
+        super(DoubleReportModel.class);
+    }
 
-    @NotNull
-    private Date endDate;
+    private DateRange range = DateRange.DAY;
 
-    private Map<String, String> filter;
+    @Override
+    public Selection<DoubleReportModel> createConstructor(CriteriaBuilder cb, Root<OrderEntity> root) {
+        if( range == DateRange.DAY ) {
+            return cb.construct(
+                DoubleReportModel.class,
+                cb.function("YEAR", Integer.class, root.get(DATE_FIELD)).alias("year"),
+                cb.function("MONTH", Integer.class, root.get(DATE_FIELD)).alias("month"),
+                cb.function("DAY"  , Integer.class, root.get(DATE_FIELD)).alias("day"),
+                cb.sum(root.get("unit")).alias("data"));
+        } else {
+            return cb.construct(
+                DoubleReportModel.class,
+                cb.function("YEAR", Integer.class, root.get(DATE_FIELD)).alias("year"),
+                cb.function("MONTH", Integer.class, root.get(DATE_FIELD)).alias("month"),
+                cb.sum(root.get("unit")).alias("data"));
+        }
+    }
 
-    private DateRange range;
+    @Override
+    public Expression<?>[] createGroupedBy(CriteriaBuilder cb, Root<OrderEntity> root) {
+        if( range == DateRange.DAY ) {
+            return new Expression[]{
+                cb.function("YEAR"  , Integer.class, root.get( DATE_FIELD )),
+                cb.function("MONTH" , Integer.class, root.get( DATE_FIELD )),
+                cb.function("DAY"   , Integer.class, root.get( DATE_FIELD ))
+            };
+        } else {
+            return new Expression[]{
+                cb.function("YEAR"  , Integer.class, root.get( DATE_FIELD )),
+                cb.function("MONTH" , Integer.class, root.get( DATE_FIELD ))
+            };
+        }
+    }
 
 
 }

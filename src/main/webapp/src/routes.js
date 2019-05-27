@@ -107,7 +107,7 @@ const OrderStateReport  = Loadable({
 });
 
 const OrderUnitReport  = Loadable({
-  loader: () => import('./views/Report/OrderUnitReport'),
+  loader: () => import('./views/Report/AdvanceReport'),
   loading: Loading,
 });
 
